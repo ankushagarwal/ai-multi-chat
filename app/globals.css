@@ -70,3 +70,27 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.chat-container .user-message {
+  background-color: rgb(73,135,252);
+  color: white;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+
+.chat-container .ai-message {
+  background-color: rgba(232, 232, 232, 1);
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.chat-container pre {
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
