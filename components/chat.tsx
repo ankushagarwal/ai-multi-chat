@@ -9,9 +9,11 @@ export interface ChatHandle {
   submit: () => void;
 }
 
-const Chat = forwardRef<ChatHandle, { inputValue: string }>(
-  ({ inputValue }, ref) => {
-    const { messages, handleInputChange, handleSubmit } = useChat({});
+const Chat = forwardRef<ChatHandle, { inputValue: string; modelName: string }>(
+  ({ inputValue, modelName }, ref) => {
+    const { messages, handleInputChange, handleSubmit } = useChat({
+      api: `/api/chat?modelName=${modelName}`,
+    });
 
     useEffect(() => {
       const event = { target: { value: inputValue } };
