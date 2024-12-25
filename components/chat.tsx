@@ -33,11 +33,14 @@ const Chat = forwardRef<ChatHandle, { inputValue: string; modelName: string }>(
         </div>
         {messages.map((message) =>
           message.role !== "user" ? (
-            <Markdown key={message.id} className="ai-message">
+            <Markdown key={message.id} className="ai-message text-sm">
               {message.content}
             </Markdown>
           ) : (
-            <div key={message.id} className="user-message whitespace-pre-wrap">
+            <div
+              key={message.id}
+              className="user-message whitespace-pre-wrap text-sm"
+            >
               {message.content}
             </div>
           )
