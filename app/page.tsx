@@ -9,7 +9,7 @@ const models = [
   { id: 1, name: "anthropic/claude-3.5-sonnet:beta" },
   { id: 2, name: "gpt-4o" },
   { id: 3, name: "gemini-1.5-pro" },
-  { id: 4, name: "o1" },
+  // { id: 4, name: "o1" },
   // Add more models here as needed
 ];
 
