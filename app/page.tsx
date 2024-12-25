@@ -25,6 +25,7 @@ export default function Home() {
         console.log("Calling submit3 from parent");
         submitRef3.current.submit();
       }
+      setInputValue("");
     }
   };
 
@@ -43,13 +44,13 @@ export default function Home() {
           />
         </div>
         <div className="flex-1  h-full rounded overflow-scroll m-1 p-2 bg-white">
-          <Chat ref={submitRef2} inputValue={inputValue} modelName="gpt-4o" />
+          <Chat ref={submitRef2} inputValue={inputValue} modelName="o3-mini" />
         </div>
         <div className="flex-1  h-full rounded overflow-scroll m-1 p-2 bg-white">
           <Chat
             ref={submitRef3}
             inputValue={inputValue}
-            modelName="gemini-2.0-flash-thinking-exp-1219"
+            modelName="gemini-1.5-pro"
           />
         </div>
       </div>

@@ -93,4 +93,5 @@ body {
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 10px;
+  overflow-x: auto;
 }
