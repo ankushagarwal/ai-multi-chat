@@ -24,10 +24,10 @@ export default function Home() {
     }
   }, []);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.metaKey && event.key === "Enter") {
       // Submit to all chat instances
-      chatRefs.current.forEach((ref, id) => {
+      chatRefs.current.forEach((ref) => {
         if (ref) {
           ref.submit();
         }
