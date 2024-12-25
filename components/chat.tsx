@@ -16,6 +16,7 @@ const Chat = forwardRef<ChatHandle, { inputValue: string; modelName: string }>(
     });
 
     // Update input value without triggering handleInputChange
+    // foo
     useEffect(() => {
       setInput(inputValue);
     }, [inputValue, setInput]);
