@@ -1,5 +1,6 @@
 "use client";
 
+import "github-markdown-css/github-markdown-light.css";
 import React, { useImperativeHandle, forwardRef } from "react";
 import { useChat } from "ai/react";
 import { useEffect } from "react";
