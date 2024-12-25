@@ -1,8 +1,8 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import Chat, { ChatHandle } from "@/components/chat";
 import { useRef, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function Home() {
   const submitRef1 = useRef<ChatHandle>(null);
@@ -43,24 +43,22 @@ export default function Home() {
           />
         </div>
         <div className="flex-1  h-full rounded overflow-scroll m-1 p-2 bg-white">
-          <Chat
-            ref={submitRef2}
-            inputValue={inputValue}
-            modelName="openai/gpt-4o-mini"
-          />
+          <Chat ref={submitRef2} inputValue={inputValue} modelName="gpt-4o" />
         </div>
         <div className="flex-1  h-full rounded overflow-scroll m-1 p-2 bg-white">
           <Chat
             ref={submitRef3}
             inputValue={inputValue}
-            modelName="google/gemini-flash-1.5"
+            modelName="gemini-2.0-flash-thinking-exp-1219"
           />
         </div>
       </div>
 
-      <footer className="flex h-10 border-t-2 border-gray-200 ">
-        <Input
-          className="bg-white mx-4"
+      <footer className="flex border-t-2 border-gray-200 mb-4 mx-4 ">
+        <TextareaAutosize
+          minRows={2}
+          maxRows={10}
+          className="bg-white mx-4 w-full p-2 focus:outline-black"
           placeholder="Search"
           onKeyDown={handleKeyDown}
           value={inputValue}

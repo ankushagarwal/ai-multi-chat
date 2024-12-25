@@ -1,4 +1,5 @@
-// import { openai } from "@ai-sdk/openai";
+import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import type { NextRequest } from "next/server";
@@ -11,8 +12,17 @@ export async function POST(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const modelName = searchParams.get("modelName") ?? "";
 
+  // if modelName contains "gemini", use google, if it starts with gpt or starts with o, use openai, otherwise use openrouter
+  let model;
+  if (modelName.includes("gemini")) {
+    model = google(modelName);
+  } else if (modelName.startsWith("gpt") || modelName.startsWith("o")) {
+    model = openai(modelName);
+  } else {
+    model = openrouter(modelName);
+  }
   const result = streamText({
-    model: openrouter(modelName),
+    model,
     messages,
   });
 
