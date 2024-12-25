@@ -11,14 +11,14 @@ export interface ChatHandle {
 
 const Chat = forwardRef<ChatHandle, { inputValue: string; modelName: string }>(
   ({ inputValue, modelName }, ref) => {
-    const { messages, handleInputChange, handleSubmit } = useChat({
+    const { messages, handleSubmit, setInput } = useChat({
       api: `/api/chat?modelName=${modelName}`,
     });
 
+    // Update input value without triggering handleInputChange
     useEffect(() => {
-      const event = { target: { value: inputValue } };
-      handleInputChange(event as React.ChangeEvent<HTMLInputElement>);
-    }, [inputValue, handleInputChange]);
+      setInput(inputValue);
+    }, [inputValue, setInput]);
 
     useImperativeHandle(ref, () => ({
       submit: () => {
