@@ -16,6 +16,9 @@ const models = [
 export default function Home() {
   const chatRefs = useRef<Map<number, ChatHandle>>(new Map());
   const [inputValue, setInputValue] = useState("");
+  const [selectedModels, setSelectedModels] = useState<Map<number, string>>(
+    new Map(models.map((model) => [model.id, model.name]))
+  );
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -26,7 +29,6 @@ export default function Home() {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.metaKey && event.key === "Enter") {
-      // Submit to all chat instances
       chatRefs.current.forEach((ref) => {
         if (ref) {
           ref.submit();
@@ -34,6 +36,10 @@ export default function Home() {
       });
       setInputValue("");
     }
+  };
+
+  const handleModelChange = (modelId: number, newModelName: string) => {
+    setSelectedModels((prev) => new Map(prev).set(modelId, newModelName));
   };
 
   return (
@@ -48,6 +54,17 @@ export default function Home() {
             key={model.id}
             className="flex-1 h-full rounded overflow-scroll m-1 p-2 bg-white"
           >
+            <select
+              value={selectedModels.get(model.id)}
+              onChange={(e) => handleModelChange(model.id, e.target.value)}
+              className="mb-2 w-full bg-slate-200"
+            >
+              {models.map((option) => (
+                <option key={option.id} value={option.name}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
             <Chat
               ref={(el) => {
                 if (el) {
@@ -57,7 +74,7 @@ export default function Home() {
                 }
               }}
               inputValue={inputValue}
-              modelName={model.name}
+              modelName={selectedModels.get(model.id) || model.name}
             />
           </div>
         ))}
