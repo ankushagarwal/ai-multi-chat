@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
 
 export default function LeftSidebar() {
   return (
@@ -7,6 +7,9 @@ export default function LeftSidebar() {
       <div className="flex flex-col gap-3 sticky top-[57px] py-4">
         <Button size="icon" variant="ghost">
           <Plus />
+        </Button>
+        <Button size="icon" variant="ghost">
+          <Settings />
         </Button>
       </div>
     </div>
