@@ -80,7 +80,9 @@ export default function Home() {
         ))}
       </div>
 
-      <footer className="flex border-t-2 border-gray-200 mb-4 mt-4 mx-4">
+      <footer className="flex border-t-2 border-gray-200 mb-4 mt-4 mx-4 relative">
+        {" "}
+        {/* Added relative positioning */}
         <TextareaAutosize
           ref={textareaRef}
           minRows={2}
@@ -91,6 +93,11 @@ export default function Home() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
+        <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pr-2">
+          {" "}
+          {/* Added span for the text */}
+          Cmd + Enter to submit{" "}
+        </span>
       </footer>
     </div>
   );
