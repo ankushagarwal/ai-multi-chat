@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Plus, Settings } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Plus, Settings } from 'lucide-react';
 
 export default function LeftSidebar() {
   return (

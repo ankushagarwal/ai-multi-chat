@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint && biome lint --write --unsafe",
+    "lint:fix": "next lint --fix && biome lint --write --unsafe",
+    "format": "biome format --write"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.6",
@@ -31,6 +33,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20",

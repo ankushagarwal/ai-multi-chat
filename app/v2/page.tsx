@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import Header from "@/components/header";
-import LeftSidebar from "@/components/leftsidebar";
-import V2Chat from "@/components/v2chat";
+import Header from '@/components/header';
+import LeftSidebar from '@/components/leftsidebar';
+import V2Chat from '@/components/v2chat';
 
 export default function Home() {
   return (

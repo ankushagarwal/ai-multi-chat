@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import "github-markdown-css/github-markdown-light.css";
-import React, { useImperativeHandle, forwardRef } from "react";
-import { useChat } from "ai/react";
-import { useEffect } from "react";
-import Markdown from "react-markdown";
-import "highlight.js/styles/github.css";
-import rehypeHighlight from "rehype-highlight";
+import 'github-markdown-css/github-markdown-light.css';
+import React, { useImperativeHandle, forwardRef } from 'react';
+import { useChat } from 'ai/react';
+import { useEffect } from 'react';
+import Markdown from 'react-markdown';
+import 'highlight.js/styles/github.css';
+import rehypeHighlight from 'rehype-highlight';
 
 export interface ChatHandle {
   submit: () => void;
@@ -33,7 +33,7 @@ const Chat = forwardRef<ChatHandle, { inputValue: string; modelName: string }>(
     return (
       <div className="chat-container">
         {messages.map((message) =>
-          message.role !== "user" ? (
+          message.role !== 'user' ? (
             <Markdown
               key={message.id}
               className="ai-message text-sm"
@@ -48,13 +48,13 @@ const Chat = forwardRef<ChatHandle, { inputValue: string; modelName: string }>(
             >
               {message.content}
             </div>
-          )
+          ),
         )}
       </div>
     );
-  }
+  },
 );
 
-Chat.displayName = "Chat";
+Chat.displayName = 'Chat';
 
 export default Chat;

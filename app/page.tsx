@@ -1,23 +1,24 @@
-"use client";
+'use client';
 
-import Chat, { ChatHandle } from "@/components/chat";
-import { useRef, useState, useEffect } from "react";
-import TextareaAutosize from "react-textarea-autosize";
+import Chat, { ChatHandle } from '@/components/chat';
+import { useRef, useState, useEffect } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 // Define your models in an array
 const models = [
-  { id: 1, name: "anthropic/claude-3.5-sonnet:beta" },
-  { id: 2, name: "gpt-4o" },
-  { id: 3, name: "gemini-1.5-pro" },
+  { id: 1, name: 'anthropic/claude-3.5-sonnet:beta' },
+  { id: 2, name: 'gpt-4o' },
+  { id: 3, name: 'gemini-1.5-pro' },
   // { id: 4, name: "o1" },
   // Add more models here as needed
 ];
 
 export default function Home() {
   const chatRefs = useRef<Map<number, ChatHandle>>(new Map());
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
+
   const [selectedModels, setSelectedModels] = useState<Map<number, string>>(
-    new Map(models.map((model) => [model.id, model.name]))
+    new Map(models.map((model) => [model.id, model.name])),
   );
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -28,13 +29,13 @@ export default function Home() {
   }, []);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.metaKey && event.key === "Enter") {
+    if (event.metaKey && event.key === 'Enter') {
       chatRefs.current.forEach((ref) => {
         if (ref) {
           ref.submit();
         }
       });
-      setInputValue("");
+      setInputValue('');
     }
   };
 
@@ -81,7 +82,7 @@ export default function Home() {
       </div>
 
       <footer className="flex border-t-2 border-gray-200 mb-4 mt-4 mx-4 relative">
-        {" "}
+        {' '}
         {/* Added relative positioning */}
         <TextareaAutosize
           ref={textareaRef}
@@ -94,9 +95,9 @@ export default function Home() {
           onChange={(e) => setInputValue(e.target.value)}
         />
         <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pr-2">
-          {" "}
+          {' '}
           {/* Added span for the text */}
-          Cmd + Enter to submit{" "}
+          Cmd + Enter to submit{' '}
         </span>
       </footer>
     </div>
