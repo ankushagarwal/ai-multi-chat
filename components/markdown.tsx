@@ -4,10 +4,9 @@ import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './code-block';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const components: Partial<Components> = {
-  // @ts-expect-error
   // code: CodeBlock,
   // https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
   // https://github.com/react-syntax-highlighter/react-syntax-highlighter
@@ -20,7 +19,7 @@ const components: Partial<Components> = {
         PreTag="div"
         children={String(children).replace(/\n$/, '')}
         language={match[1]}
-        style={materialDark}
+        style={oneDark}
         customStyle={{
           borderRadius: '0.5rem',
         }}
