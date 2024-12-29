@@ -5,16 +5,7 @@ import LeftSidebar from '@/components/leftsidebar';
 import V2Chat, { type ChatHandle } from '@/components/v2chat';
 import { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-
-// Define your models in an array
-const models = [
-  { id: 1, name: 'anthropic/claude-3.5-sonnet:beta' },
-  { id: 2, name: 'gpt-4o' },
-  { id: 3, name: 'gemini-1.5-pro' },
-  // { id: 4, name: "o1" },
-  // Add more models here as needed
-];
-
+import { initialModels } from '@/lib/models';
 export default function Home() {
   const chatRefs = useRef<Map<number, ChatHandle>>(new Map());
   const [inputValue, setInputValue] = useState('');
@@ -49,16 +40,16 @@ export default function Home() {
           <main className="flex overflow-hidden h-[calc(100svh-57px)]">
             <div className="flex flex-col flex-1 h-full overflow-x-auto bg-background-100">
               <div className="flex size-full p-2 space-x-2 overflow-x-auto snap-x snap-mandatory md:snap-none md:overflow-y-hidden border-b border-gray-alpha-400">
-                {models.map((model) => (
+                {initialModels.map((model, index) => (
                   <V2Chat
-                    key={model.id}
+                    key={model}
                     inputValue={inputValue}
-                    modelName={model.name}
+                    modelName={model}
                     ref={(el) => {
                       if (el) {
-                        chatRefs.current.set(model.id, el);
+                        chatRefs.current.set(index, el);
                       } else {
-                        chatRefs.current.delete(model.id);
+                        chatRefs.current.delete(index);
                       }
                     }}
                   />
