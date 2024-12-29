@@ -1,7 +1,9 @@
 'use client';
 
-import Chat, { type ChatHandle } from '@/components/chat';
-import { useRef, useState, useEffect } from 'react';
+import Header from '@/components/header';
+import LeftSidebar from '@/components/leftsidebar';
+import V2Chat, { type ChatHandle } from '@/components/v2chat';
+import { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 // Define your models in an array
@@ -30,8 +32,10 @@ export default function Home() {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.metaKey && event.key === 'Enter') {
-      chatRefs.current.forEach((ref) => {
+      console.log('main submit called');
+      chatRefs.current.forEach((ref, id) => {
         if (ref) {
+          console.log('submit called for', id);
           ref.submit();
         }
       });
@@ -39,67 +43,54 @@ export default function Home() {
     }
   };
 
-  const handleModelChange = (modelId: number, newModelName: string) => {
-    setSelectedModels((prev) => new Map(prev).set(modelId, newModelName));
-  };
-
   return (
-    <div className="h-screen flex flex-col bg-slate-200">
-      <header className="flex h-10 border-b-2 bg-slate-100 border-slate-300 items-center justify-center">
-        <h1 className="text-2xl font-bold">AI Multi Chat</h1>
-      </header>
-
-      <div className="flex flex-1 overflow-auto">
-        {models.map((model) => (
-          <div
-            key={model.id}
-            className="flex-1 h-full rounded overflow-scroll m-1 p-2 bg-white"
-          >
-            <select
-              value={selectedModels.get(model.id)}
-              onChange={(e) => handleModelChange(model.id, e.target.value)}
-              className="mb-2 w-full bg-slate-200"
-            >
-              {models.map((option) => (
-                <option key={option.id} value={option.name}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-            <Chat
-              ref={(el) => {
-                if (el) {
-                  chatRefs.current.set(model.id, el);
-                } else {
-                  chatRefs.current.delete(model.id);
-                }
-              }}
-              inputValue={inputValue}
-              modelName={selectedModels.get(model.id) || model.name}
-            />
-          </div>
-        ))}
+    <div className="flex flex-col">
+      <Header />
+      <div className="flex flex-row w-full">
+        <LeftSidebar />
+        <div className="w-[calc(100dvw-56px)]">
+          <main className="flex overflow-hidden h-[calc(100svh-57px)]">
+            <div className="flex flex-col flex-1 h-full overflow-x-auto bg-background-100">
+              <div className="flex size-full p-2 space-x-2 overflow-x-auto snap-x snap-mandatory md:snap-none md:overflow-y-hidden border-b border-gray-alpha-400">
+                {models.map((model) => (
+                  <V2Chat
+                    key={model.id}
+                    inputValue={inputValue}
+                    modelName={model.name}
+                    ref={(el) => {
+                      if (el) {
+                        chatRefs.current.set(model.id, el);
+                      } else {
+                        chatRefs.current.delete(model.id);
+                      }
+                    }}
+                  />
+                ))}
+                {/* <V2Chat />
+                <V2Chat /> */}
+              </div>
+              <footer className="flex bg-zinc-100 relative">
+                {/* {' '} */}
+                {/* Added relative positioning */}
+                <TextareaAutosize
+                  ref={textareaRef}
+                  minRows={1}
+                  maxRows={10}
+                  className="bg-white m-4 w-full p-2 focus:outline-none focus:border-zinc-500 border border-gray-alpha-400 rounded-md text-sm"
+                  placeholder="Your message..."
+                  onKeyDown={handleKeyDown}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm pr-2">
+                  {' '}
+                  Cmd + Enter to submit{' '}
+                </span>
+              </footer>
+            </div>
+          </main>
+        </div>
       </div>
-
-      <footer className="flex border-t-2 border-gray-200 m-4 relative">
-        {' '}
-        {/* Added relative positioning */}
-        <TextareaAutosize
-          ref={textareaRef}
-          minRows={2}
-          maxRows={10}
-          className="bg-white mx-4 w-full p-2 focus:outline-black"
-          placeholder="Your message..."
-          onKeyDown={handleKeyDown}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm pr-2">
-          {' '}
-          {/* Added span for the text */}
-          Cmd + Enter to submit{' '}
-        </span>
-      </footer>
     </div>
   );
 }
