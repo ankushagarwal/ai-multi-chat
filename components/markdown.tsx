@@ -3,10 +3,31 @@ import React, { memo } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './code-block';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const components: Partial<Components> = {
   // @ts-expect-error
-  code: CodeBlock,
+  // code: CodeBlock,
+  // https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
+  // https://github.com/react-syntax-highlighter/react-syntax-highlighter
+  code: (props) => {
+    const { children, className, node, ...rest } = props;
+    const match = /language-(\w+)/.exec(className || '');
+    return match ? (
+      <SyntaxHighlighter
+        {...rest}
+        PreTag="div"
+        children={String(children).replace(/\n$/, '')}
+        language={match[1]}
+        style={oneDark}
+      />
+    ) : (
+      <code {...rest} className={`${className} bg-zinc-200 px-1 rounded-sm`}>
+        {children}
+      </code>
+    );
+  },
   pre: ({ children }) => <>{children}</>,
   ol: ({ node, children, ...props }) => {
     return (
