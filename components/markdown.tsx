@@ -4,7 +4,7 @@ import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './code-block';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const components: Partial<Components> = {
   // @ts-expect-error
@@ -20,7 +20,10 @@ const components: Partial<Components> = {
         PreTag="div"
         children={String(children).replace(/\n$/, '')}
         language={match[1]}
-        style={prism}
+        style={materialDark}
+        customStyle={{
+          borderRadius: '0.5rem',
+        }}
       />
     ) : (
       <code {...rest} className={`${className} bg-zinc-200 px-1 rounded-sm`}>
