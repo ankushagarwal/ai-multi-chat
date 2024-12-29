@@ -1,23 +1,32 @@
 'use client';
 
-import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
+import React, {
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+  useState,
+} from 'react';
 import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
-
+import { ModelSelector } from '@/components/modelselector';
 export interface ChatHandle {
   submit: () => void;
 }
 
 const V2Chat = forwardRef<
   ChatHandle,
-  { inputValue: string; modelName: string }
+  {
+    inputValue: string;
+    modelName: string;
+  }
 >(({ inputValue, modelName }, ref) => {
+  const [selectedModel, setSelectedModel] = useState(modelName);
+
   const { messages, handleSubmit, setInput } = useChat({
-    api: `/api/chat?modelName=${modelName}`,
+    api: `/api/chat?modelName=${selectedModel}`,
   });
 
   // Update input value without triggering handleInputChange
-  // foo
   useEffect(() => {
     setInput(inputValue);
   }, [inputValue, setInput]);
@@ -40,8 +49,14 @@ const V2Chat = forwardRef<
             style={{ overflowAnchor: 'none' }}
           >
             <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
-              <div className="flex items-center bg-background-200 backdrop-blur shadow-[0_1px_rgba(202,206,214,.3),0_5px_10px_-5px_rgba(0,0,0,.05)] dark:shadow-[0_1px_rgba(255,255,255,0.15)] justify-between py-3 pl-3 pr-2">
-                <div className="flex items-center">{modelName}</div>
+              <div className="flex items-center bg-zinc-100 backdrop-blur shadow-[0_1px_rgba(202,206,214,.3),0_5px_10px_-5px_rgba(0,0,0,.05)] dark:shadow-[0_1px_rgba(255,255,255,0.15)] justify-between py-3 pl-3 pr-2">
+                {/* <div className="flex items-center">{modelName}</div> */}
+                <ModelSelector
+                  initialValue={modelName}
+                  onSelectAction={(value) => {
+                    setSelectedModel(value);
+                  }}
+                />
               </div>
             </div>
 

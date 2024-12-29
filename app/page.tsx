@@ -19,9 +19,6 @@ export default function Home() {
   const chatRefs = useRef<Map<number, ChatHandle>>(new Map());
   const [inputValue, setInputValue] = useState('');
 
-  const [selectedModels, setSelectedModels] = useState<Map<number, string>>(
-    new Map(models.map((model) => [model.id, model.name])),
-  );
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -66,8 +63,6 @@ export default function Home() {
                     }}
                   />
                 ))}
-                {/* <V2Chat />
-                <V2Chat /> */}
               </div>
               <footer className="flex bg-zinc-100 relative">
                 {/* {' '} */}
