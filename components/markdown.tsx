@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const components: Partial<Components> = {
   // code: CodeBlock,
@@ -20,7 +20,7 @@ const components: Partial<Components> = {
         // eslint-disable-next-line
         children={String(children).replace(/\n$/, '')}
         language={match[1]}
-        style={oneDark}
+        style={github}
         customStyle={{
           borderRadius: '0.5rem',
         }}

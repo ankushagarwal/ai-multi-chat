@@ -7,11 +7,130 @@ import React, {
   useState,
 } from 'react';
 import { useChat } from 'ai/react';
-import { Markdown } from '@/components/markdown';
+// import { Markdown } from '@/components/markdown';
+import 'github-markdown-css/github-markdown-light.css';
+import Markdown, { type Components } from 'react-markdown';
+import 'highlight.js/styles/github.css';
+import rehypeHighlight from 'rehype-highlight';
 import { ModelSelector } from '@/components/modelselector';
+import { CodeBlock } from '@/components/code-block';
+
 export interface ChatHandle {
   submit: () => void;
 }
+import Link from 'next/link';
+
+const components: Partial<Components> = {
+  code: CodeBlock,
+  // https://github.com/remarkjs/react-markdown?tab=readme-ov-file#use-custom-components-syntax-highlight
+  // https://github.com/react-syntax-highlighter/react-syntax-highlighter
+  // code: (props) => {
+  //   const { children, className, node, ...rest } = props;
+  //   const match = /language-(\w+)/.exec(className || '');
+  //   return match ? (
+  //     // @ts-expect-error
+  //     <SyntaxHighlighter
+  //       {...rest}
+  //       PreTag="div"
+  //       // eslint-disable-next-line
+  //       children={String(children).replace(/\n$/, '')}
+  //       language={match[1]}
+  //       style={github}
+  //       customStyle={{
+  //         borderRadius: '0.5rem',
+  //       }}
+  //     />
+  //   ) : (
+  //     <code {...rest} className={`${className} bg-zinc-200 px-1 rounded-sm`}>
+  //       {children}
+  //     </code>
+  //   );
+  // },
+  pre: ({ children }) => <>{children}</>,
+  ol: ({ node, children, ...props }) => {
+    return (
+      <ol className="list-decimal list-outside ml-4" {...props}>
+        {children}
+      </ol>
+    );
+  },
+  li: ({ node, children, ...props }) => {
+    return (
+      <li className="py-1" {...props}>
+        {children}
+      </li>
+    );
+  },
+  ul: ({ node, children, ...props }) => {
+    return (
+      <ul className="list-decimal list-outside ml-4" {...props}>
+        {children}
+      </ul>
+    );
+  },
+  strong: ({ node, children, ...props }) => {
+    return (
+      <span className="font-semibold" {...props}>
+        {children}
+      </span>
+    );
+  },
+  a: ({ node, children, ...props }) => {
+    return (
+      // @ts-expect-error
+      <Link
+        className="text-blue-500 hover:underline"
+        target="_blank"
+        rel="noreferrer"
+        {...props}
+      >
+        {children}
+      </Link>
+    );
+  },
+  h1: ({ node, children, ...props }) => {
+    return (
+      <h1 className="text-3xl font-semibold mt-6 mb-2" {...props}>
+        {children}
+      </h1>
+    );
+  },
+  h2: ({ node, children, ...props }) => {
+    return (
+      <h2 className="text-2xl font-semibold mt-6 mb-2" {...props}>
+        {children}
+      </h2>
+    );
+  },
+  h3: ({ node, children, ...props }) => {
+    return (
+      <h3 className="text-xl font-semibold mt-6 mb-2" {...props}>
+        {children}
+      </h3>
+    );
+  },
+  h4: ({ node, children, ...props }) => {
+    return (
+      <h4 className="text-lg font-semibold mt-6 mb-2" {...props}>
+        {children}
+      </h4>
+    );
+  },
+  h5: ({ node, children, ...props }) => {
+    return (
+      <h5 className="text-base font-semibold mt-6 mb-2" {...props}>
+        {children}
+      </h5>
+    );
+  },
+  h6: ({ node, children, ...props }) => {
+    return (
+      <h6 className="text-sm font-semibold mt-6 mb-2" {...props}>
+        {children}
+      </h6>
+    );
+  },
+};
 
 const V2Chat = forwardRef<
   ChatHandle,
@@ -69,14 +188,29 @@ const V2Chat = forwardRef<
                         key={message.id}
                         className="px-3 @md:py-4 py-2.5 group transition-opacity message bg-zinc-100 dark:bg-zinc-900"
                       >
-                        <Markdown>{message.content}</Markdown>
+                        <Markdown
+                          // key={message.id}
+                          className="user-message text-sm"
+                          // rehypePlugins={[[rehypeHighlight, { detect: true }]]}
+                          components={components}
+                        >
+                          {message.content}
+                        </Markdown>
                       </div>
                     ) : (
                       <div
                         key={message.id}
                         className="px-3 @md:py-4 py-2.5 group transition-opacity message"
                       >
-                        <Markdown>{message.content}</Markdown>
+                        {/* <Markdown>{message.content}</Markdown> */}
+                        <Markdown
+                          // key={message.id}
+                          className="ai-message text-sm"
+                          rehypePlugins={[[rehypeHighlight, { detect: true }]]}
+                          // components={components}
+                        >
+                          {message.content}
+                        </Markdown>
                       </div>
                     ),
                   )}
