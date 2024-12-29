@@ -20,6 +20,8 @@ const config: Config = {
       },
       colors: {
         background: 'hsl(var(--background))',
+        'background-100': 'hsl(var(--background-100))',
+        'background-200': 'hsl(var(--background-200))',
         foreground: 'hsl(var(--foreground))',
         card: {
           DEFAULT: 'hsl(var(--card))',
