@@ -14,9 +14,11 @@ const components: Partial<Components> = {
     const { children, className, node, ...rest } = props;
     const match = /language-(\w+)/.exec(className || '');
     return match ? (
+      // @ts-expect-error
       <SyntaxHighlighter
         {...rest}
         PreTag="div"
+        // eslint-disable-next-line
         children={String(children).replace(/\n$/, '')}
         language={match[1]}
         style={oneDark}
