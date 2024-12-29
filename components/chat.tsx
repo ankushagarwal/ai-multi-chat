@@ -1,9 +1,8 @@
 'use client';
 
 import 'github-markdown-css/github-markdown-light.css';
-import React, { useImperativeHandle, forwardRef } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect } from 'react';
 import { useChat } from 'ai/react';
-import { useEffect } from 'react';
 import Markdown from 'react-markdown';
 import 'highlight.js/styles/github.css';
 import rehypeHighlight from 'rehype-highlight';

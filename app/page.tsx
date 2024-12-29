@@ -1,6 +1,6 @@
 'use client';
 
-import Chat, { ChatHandle } from '@/components/chat';
+import Chat, { type ChatHandle } from '@/components/chat';
 import { useRef, useState, useEffect } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -81,7 +81,7 @@ export default function Home() {
         ))}
       </div>
 
-      <footer className="flex border-t-2 border-gray-200 mb-4 mt-4 mx-4 relative">
+      <footer className="flex border-t-2 border-gray-200 m-4 relative">
         {' '}
         {/* Added relative positioning */}
         <TextareaAutosize
@@ -94,7 +94,7 @@ export default function Home() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
-        <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pr-2">
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm pr-2">
           {' '}
           {/* Added span for the text */}
           Cmd + Enter to submit{' '}
