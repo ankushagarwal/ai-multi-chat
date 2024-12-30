@@ -10,25 +10,79 @@ import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
 import { ModelSelector } from '@/components/modelselector';
 import { LoaderCircle } from 'lucide-react';
+
+// Types
 export interface ChatHandle {
   submit: () => void;
 }
 
-const BUFFER_SIZE = 256;
+interface ChatHeaderProps {
+  modelName: string;
+  isLoading: boolean;
+  onModelSelect: (value: string) => void;
+}
 
-const V2Chat = forwardRef<
-  ChatHandle,
-  {
-    inputValue: string;
-    modelName: string;
-  }
->(({ inputValue, modelName }, ref) => {
-  const [selectedModel, setSelectedModel] = useState(modelName);
+interface MessageProps {
+  content: string;
+  isUser: boolean;
+}
 
-  const { messages, handleSubmit, setInput, isLoading } = useChat({
-    api: `/api/chat?modelName=${selectedModel}`,
-  });
+const BUFFER_SIZE = 512;
 
+// Sub-components
+const ChatHeader = ({
+  modelName,
+  isLoading,
+  onModelSelect,
+}: ChatHeaderProps) => (
+  <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
+    <div className="flex items-center bg-zinc-100 backdrop-blur justify-normal py-3 pl-3 pr-2">
+      <ModelSelector initialValue={modelName} onSelectAction={onModelSelect} />
+      {isLoading && (
+        <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
+      )}
+    </div>
+  </div>
+);
+
+const Message = ({ content, isUser }: MessageProps) => (
+  <div
+    className={`px-3 @md:py-4 py-2.5 group transition-opacity message ${
+      isUser ? 'bg-zinc-100 dark:bg-zinc-900' : ''
+    }`}
+  >
+    {isUser ? content : <Markdown>{content}</Markdown>}
+  </div>
+);
+
+const MessageList = ({
+  messages,
+  bufferedLastAssistantMessage,
+}: {
+  messages: any;
+  bufferedLastAssistantMessage: string;
+}) => (
+  <div className="flex-1 min-w-0">
+    <div className="scrolling-touch scrolling-gpu size-full relative overflow-auto overscroll-y-auto">
+      <div className="h-full divide-y pb-12 text-sm">
+        {messages.map((message: any, index: number) => (
+          <Message
+            key={message.id}
+            content={
+              index === messages.length - 1 && message.role === 'assistant'
+                ? bufferedLastAssistantMessage
+                : message.content
+            }
+            isUser={message.role === 'user'}
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// Custom Hook for message buffering
+const useMessageBuffer = (messages: any, isLoading: boolean) => {
   const [bufferedLastAssistantMessage, setBufferedLastAssistantMessage] =
     useState<string>('');
 
@@ -56,7 +110,21 @@ const V2Chat = forwardRef<
     }
   }, [messages, bufferedLastAssistantMessage.length, isLoading]);
 
-  // Update input value without triggering handleInputChange
+  return bufferedLastAssistantMessage;
+};
+
+// Main Component
+const V2Chat = forwardRef<
+  ChatHandle,
+  { inputValue: string; modelName: string }
+>(({ inputValue, modelName }, ref) => {
+  const [selectedModel, setSelectedModel] = useState(modelName);
+  const { messages, handleSubmit, setInput, isLoading } = useChat({
+    api: `/api/chat?modelName=${selectedModel}`,
+  });
+
+  const bufferedLastAssistantMessage = useMessageBuffer(messages, isLoading);
+
   useEffect(() => {
     setInput(inputValue);
   }, [inputValue, setInput]);
@@ -78,80 +146,20 @@ const V2Chat = forwardRef<
             className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none"
             style={{ overflowAnchor: 'none' }}
           >
-            <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
-              <div className="flex items-center bg-zinc-100 backdrop-blur justify-normal py-3 pl-3 pr-2">
-                {/* <div className="flex items-center">{modelName}</div> */}
-                <ModelSelector
-                  initialValue={modelName}
-                  onSelectAction={(value) => {
-                    setSelectedModel(value);
-                  }}
-                />
-                {isLoading && (
-                  <LoaderCircle
-                    className="animate-spin text-zinc-500 ml-4"
-                    // size={64}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="scrolling-touch scrolling-gpu size-full relative overflow-auto overscroll-y-auto">
-                <div className="h-full divide-y pb-12">
-                  {messages.map((message, index) =>
-                    message.role === 'user' ? (
-                      <div
-                        key={message.id}
-                        className="px-3 @md:py-4 py-2.5 group transition-opacity message bg-zinc-100 dark:bg-zinc-900"
-                      >
-                        {message.content}
-                      </div>
-                    ) : (
-                      <div
-                        key={message.id}
-                        className="px-3 @md:py-4 py-2.5 group transition-opacity message"
-                      >
-                        <Markdown>
-                          {index === messages.length - 1
-                            ? bufferedLastAssistantMessage
-                            : message.content}
-                        </Markdown>
-                      </div>
-                    ),
-                  )}
-                </div>
-              </div>
-            </div>
+            <ChatHeader
+              modelName={modelName}
+              isLoading={isLoading}
+              onModelSelect={setSelectedModel}
+            />
+            <MessageList
+              messages={messages}
+              bufferedLastAssistantMessage={bufferedLastAssistantMessage}
+            />
           </div>
         </div>
       </div>
     </div>
   );
-
-  // old
-  // return (
-  //   <div className="chat-container">
-  //     {messages.map((message) =>
-  //       message.role !== "user" ? (
-  //         <Markdown
-  //           key={message.id}
-  //           className="ai-message text-sm"
-  //           rehypePlugins={[[rehypeHighlight, { detect: true }]]}
-  //         >
-  //           {message.content}
-  //         </Markdown>
-  //       ) : (
-  //         <div
-  //           key={message.id}
-  //           className="user-message whitespace-pre-wrap text-sm"
-  //         >
-  //           {message.content}
-  //         </div>
-  //       )
-  //     )}
-  //   </div>
-  // );
 });
 
 V2Chat.displayName = 'V2Chat';
