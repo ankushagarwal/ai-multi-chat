@@ -18,6 +18,7 @@ const CodeBlockComponent = ({ children, className, ...rest }) => {
       style={oneDark}
       customStyle={{
         borderRadius: '0.5rem',
+        fontSize: '14px',
       }}
     />
   ) : (
