@@ -3,7 +3,7 @@ import React, { memo, useState } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+// import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -25,7 +25,7 @@ const CodeBlockComponent = ({ children, className, ...rest }) => {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute size-fit top-1 right-1 p-0 bg-transparent text-zinc-200 hover:bg-transparent hover:text-zinc-50 flex items-center"
+        className="absolute size-fit top-1 right-1 p-0 bg-transparent text-zinc-500 hover:bg-transparent hover:text-zinc-900 flex items-center"
         onClick={handleCopy}
       >
         <Copy />
@@ -37,7 +37,7 @@ const CodeBlockComponent = ({ children, className, ...rest }) => {
         // eslint-disable-next-line
         children={String(children).replace(/\n$/, '')}
         language={match[1]}
-        style={oneDark}
+        // style={coldarkDark}
         customStyle={{
           borderRadius: '0.5rem',
           fontSize: '14px',
