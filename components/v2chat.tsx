@@ -14,6 +14,8 @@ export interface ChatHandle {
   submit: () => void;
 }
 
+const BUFFER_SIZE = 256;
+
 const V2Chat = forwardRef<
   ChatHandle,
   {
@@ -26,6 +28,33 @@ const V2Chat = forwardRef<
   const { messages, handleSubmit, setInput, isLoading } = useChat({
     api: `/api/chat?modelName=${selectedModel}`,
   });
+
+  const [bufferedLastAssistantMessage, setBufferedLastAssistantMessage] =
+    useState<string>('');
+
+  useEffect(() => {
+    if (
+      messages.length === 0 ||
+      messages[messages.length - 1].role !== 'assistant'
+    ) {
+      return;
+    }
+
+    const lastMessage = messages[messages.length - 1];
+
+    if (
+      lastMessage.content.length >=
+        bufferedLastAssistantMessage.length + BUFFER_SIZE ||
+      !isLoading
+    ) {
+      setBufferedLastAssistantMessage(lastMessage.content);
+    } else if (
+      lastMessage.content.length < bufferedLastAssistantMessage.length &&
+      isLoading
+    ) {
+      setBufferedLastAssistantMessage('');
+    }
+  }, [messages, bufferedLastAssistantMessage.length, isLoading]);
 
   // Update input value without triggering handleInputChange
   useEffect(() => {
@@ -70,7 +99,7 @@ const V2Chat = forwardRef<
             <div className="flex-1 min-w-0">
               <div className="scrolling-touch scrolling-gpu size-full relative overflow-auto overscroll-y-auto">
                 <div className="h-full divide-y pb-12">
-                  {messages.map((message) =>
+                  {messages.map((message, index) =>
                     message.role === 'user' ? (
                       <div
                         key={message.id}
@@ -83,7 +112,11 @@ const V2Chat = forwardRef<
                         key={message.id}
                         className="px-3 @md:py-4 py-2.5 group transition-opacity message"
                       >
-                        <Markdown>{message.content}</Markdown>
+                        <Markdown>
+                          {index === messages.length - 1
+                            ? bufferedLastAssistantMessage
+                            : message.content}
+                        </Markdown>
                       </div>
                     ),
                   )}
