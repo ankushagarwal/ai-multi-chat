@@ -27,7 +27,7 @@ export default function Home() {
       chatRefs.current.forEach((ref, id) => {
         if (ref) {
           console.log('submit called for', id);
-          ref.submit();
+          ref.submit(event.target);
         }
       });
       setInputValue('');

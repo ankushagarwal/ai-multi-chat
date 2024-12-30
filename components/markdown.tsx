@@ -1,26 +1,49 @@
 import Link from 'next/link';
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Copy } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // @ts-expect-error
 const CodeBlockComponent = ({ children, className, ...rest }) => {
+  const [copied, setCopied] = useState(false);
+
   const match = /language-(\w+)/.exec(className || '');
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(children).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return match ? (
-    <SyntaxHighlighter
-      {...rest}
-      PreTag="div"
-      // eslint-disable-next-line
-      children={String(children).replace(/\n$/, '')}
-      language={match[1]}
-      style={oneDark}
-      customStyle={{
-        borderRadius: '0.5rem',
-        fontSize: '14px',
-      }}
-    />
+    <div className="relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute size-fit top-1 right-1 p-0 bg-transparent text-zinc-200 hover:bg-transparent hover:text-zinc-50 flex items-center"
+        onClick={handleCopy}
+      >
+        <Copy />
+        <span className="text-xs">{copied ? 'Copied!' : 'Copy'}</span>
+      </Button>
+      <SyntaxHighlighter
+        {...rest}
+        // PreTag="div"
+        // eslint-disable-next-line
+        children={String(children).replace(/\n$/, '')}
+        language={match[1]}
+        style={oneDark}
+        customStyle={{
+          borderRadius: '0.5rem',
+          fontSize: '14px',
+        }}
+      />
+    </div>
   ) : (
     <code {...rest} className={`${className} bg-zinc-200 px-1 rounded-sm`}>
       {children}

@@ -76,7 +76,7 @@ const V2Chat = forwardRef<
                         key={message.id}
                         className="px-3 @md:py-4 py-2.5 group transition-opacity message bg-zinc-100 dark:bg-zinc-900"
                       >
-                        <Markdown>{message.content}</Markdown>
+                        {message.content}
                       </div>
                     ) : (
                       <div

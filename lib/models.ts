@@ -20,8 +20,4 @@ export const modelList = [
   { name: 'deepseek/deepseek-chat' },
 ];
 
-export const initialModels = [
-  'anthropic/claude-3.5-sonnet:beta',
-  'gpt-4o',
-  'gemini-1.5-pro',
-];
+export const initialModels = ['o1-mini', 'gpt-4o', 'gemini-1.5-pro'];
