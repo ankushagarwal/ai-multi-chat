@@ -5,6 +5,7 @@ import React, {
   forwardRef,
   useEffect,
   useState,
+  useRef,
 } from 'react';
 import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
@@ -36,7 +37,7 @@ const ChatHeader = ({
   onModelSelect,
 }: ChatHeaderProps) => (
   <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
-    <div className="flex items-center bg-zinc-100 backdrop-blur justify-normal py-3 pl-3 pr-2">
+    <div className="flex items-center bg-zinc-200 backdrop-blur justify-normal py-3 pl-3 pr-2">
       <ModelSelector initialValue={modelName} onSelectAction={onModelSelect} />
       {isLoading && (
         <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
@@ -51,35 +52,53 @@ const Message = ({ content, isUser }: MessageProps) => (
       isUser ? 'bg-zinc-100 dark:bg-zinc-900' : ''
     }`}
   >
-    {isUser ? content : <Markdown>{content}</Markdown>}
+    {isUser ? <pre>{content}</pre> : <Markdown>{content}</Markdown>}
   </div>
 );
 
 const MessageList = ({
   messages,
   bufferedLastAssistantMessage,
+  isLoading,
 }: {
   messages: any;
   bufferedLastAssistantMessage: string;
-}) => (
-  <div className="flex-1 min-w-0">
-    <div className="scrolling-touch scrolling-gpu size-full relative overflow-auto overscroll-y-auto">
-      <div className="h-full divide-y pb-12 text-sm">
-        {messages.map((message: any, index: number) => (
-          <Message
-            key={message.id}
-            content={
-              index === messages.length - 1 && message.role === 'assistant'
-                ? bufferedLastAssistantMessage
-                : message.content
-            }
-            isUser={message.role === 'user'}
-          />
-        ))}
+  isLoading: boolean;
+}) => {
+  const scrollToBottomRef = useRef<HTMLDivElement>(null);
+  // use this to scroll to bottom when new message is added
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     const interval = setInterval(() => {
+  //       if (scrollToBottomRef.current) {
+  //         scrollToBottomRef.current.scrollIntoView({ behavior: 'smooth' });
+  //       }
+  //     }, 1000);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [isLoading]);
+
+  return (
+    <div className="flex-1 min-w-0">
+      <div className="scrolling-touch scrolling-gpu size-full relative overflow-auto overscroll-y-auto">
+        <div className="h-full divide-y pb-12 text-sm">
+          {messages.map((message: any, index: number) => (
+            <Message
+              key={message.id}
+              content={
+                index === messages.length - 1 && message.role === 'assistant'
+                  ? bufferedLastAssistantMessage
+                  : message.content
+              }
+              isUser={message.role === 'user'}
+            />
+          ))}
+          <div ref={scrollToBottomRef} />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Custom Hook for message buffering
 const useMessageBuffer = (messages: any, isLoading: boolean) => {
@@ -154,6 +173,7 @@ const V2Chat = forwardRef<
             <MessageList
               messages={messages}
               bufferedLastAssistantMessage={bufferedLastAssistantMessage}
+              isLoading={isLoading}
             />
           </div>
         </div>

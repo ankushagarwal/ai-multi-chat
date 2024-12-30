@@ -6,6 +6,7 @@ import V2Chat, { type ChatHandle } from '@/components/v2chat';
 import { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { initialModels } from '@/lib/models';
+import { Button } from '@/components/ui/button';
 export default function Home() {
   const chatRefs = useRef<Map<number, ChatHandle>>(new Map());
   const [inputValue, setInputValue] = useState('');
@@ -17,20 +18,22 @@ export default function Home() {
       textareaRef.current.focus();
     }
   }, []);
+
+  const submit = () => {
+    chatRefs.current.forEach((ref, id) => {
+      if (ref) {
+        ref.submit();
+      }
+    });
+    setInputValue('');
+  };
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const isSmallScreen = window.innerWidth <= 768; // Example breakpoint for small screens
     if (
       (isSmallScreen && event.key === 'Enter') ||
       (event.metaKey && event.key === 'Enter')
     ) {
-      console.log('main submit called');
-      chatRefs.current.forEach((ref, id) => {
-        if (ref) {
-          console.log('submit called for', id);
-          ref.submit();
-        }
-      });
-      setInputValue('');
+      submit();
     }
   };
 
@@ -58,23 +61,28 @@ export default function Home() {
                   />
                 ))}
               </div>
-              <footer className="flex bg-zinc-100 relative">
+              <footer className="flex bg-zinc-100 ">
                 {/* {' '} */}
                 {/* Added relative positioning */}
-                <TextareaAutosize
-                  ref={textareaRef}
-                  minRows={1}
-                  maxRows={10}
-                  className="bg-white m-4 w-full p-2 focus:outline-none focus:border-zinc-500 border border-gray-alpha-400 rounded-md text-sm"
-                  placeholder="Your message..."
-                  onKeyDown={handleKeyDown}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm pr-2">
-                  {' '}
-                  Cmd + Enter to submit{' '}
-                </span>
+                <div className="flex w-full m-4 items-center">
+                  <TextareaAutosize
+                    ref={textareaRef}
+                    minRows={1}
+                    maxRows={10}
+                    className="bg-white grow p-2 focus:outline-none focus:border-zinc-500 border border-gray-alpha-400 rounded-md text-sm"
+                    placeholder="Your message..."
+                    onKeyDown={handleKeyDown}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                  />
+                  <Button
+                    className="text-xs h-8 ml-2"
+                    variant="default"
+                    onClick={submit}
+                  >
+                    Submit
+                  </Button>
+                </div>
               </footer>
             </div>
           </main>

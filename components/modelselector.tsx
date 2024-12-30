@@ -32,19 +32,23 @@ export function ModelSelector({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="justify-between"
-        >
-          {value
-            ? modelList.find((model) => model.name === value)?.name
-            : 'Select model...'}
-          <ChevronsUpDown className="opacity-50" />
-        </Button>
-      </PopoverTrigger>
+      <div className="flex items-center">
+        <span className="mr-2">Model</span>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="justify-between"
+          >
+            {value
+              ? modelList.find((model) => model.name === value)?.name
+              : 'Select model...'}
+            <ChevronsUpDown className="opacity-50" />
+          </Button>
+        </PopoverTrigger>
+      </div>
+
       <PopoverContent className="p-0">
         <Command>
           <CommandInput placeholder="Search model..." className="h-9" />
