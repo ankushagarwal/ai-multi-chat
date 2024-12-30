@@ -26,5 +26,10 @@ export async function POST(req: NextRequest) {
     messages,
   });
 
-  return result.toDataStreamResponse();
+  return result.toDataStreamResponse({
+    getErrorMessage: (error: any) => {
+      console.log('error message for model', modelName, error);
+      return error.message;
+    },
+  });
 }
