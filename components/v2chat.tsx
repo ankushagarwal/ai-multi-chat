@@ -9,6 +9,7 @@ import React, {
 import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
 import { ModelSelector } from '@/components/modelselector';
+import { LoaderCircle } from 'lucide-react';
 export interface ChatHandle {
   submit: () => void;
 }
@@ -22,7 +23,7 @@ const V2Chat = forwardRef<
 >(({ inputValue, modelName }, ref) => {
   const [selectedModel, setSelectedModel] = useState(modelName);
 
-  const { messages, handleSubmit, setInput } = useChat({
+  const { messages, handleSubmit, setInput, isLoading } = useChat({
     api: `/api/chat?modelName=${selectedModel}`,
   });
 
@@ -49,7 +50,7 @@ const V2Chat = forwardRef<
             style={{ overflowAnchor: 'none' }}
           >
             <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
-              <div className="flex items-center bg-zinc-100 backdrop-blur shadow-[0_1px_rgba(202,206,214,.3),0_5px_10px_-5px_rgba(0,0,0,.05)] dark:shadow-[0_1px_rgba(255,255,255,0.15)] justify-between py-3 pl-3 pr-2">
+              <div className="flex items-center bg-zinc-100 backdrop-blur justify-normal py-3 pl-3 pr-2">
                 {/* <div className="flex items-center">{modelName}</div> */}
                 <ModelSelector
                   initialValue={modelName}
@@ -57,6 +58,12 @@ const V2Chat = forwardRef<
                     setSelectedModel(value);
                   }}
                 />
+                {isLoading && (
+                  <LoaderCircle
+                    className="animate-spin text-zinc-500 ml-4"
+                    // size={64}
+                  />
+                )}
               </div>
             </div>
 
