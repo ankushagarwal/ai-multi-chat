@@ -17,9 +17,12 @@ export default function Home() {
       textareaRef.current.focus();
     }
   }, []);
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.metaKey && event.key === 'Enter') {
+    const isSmallScreen = window.innerWidth <= 768; // Example breakpoint for small screens
+    if (
+      (isSmallScreen && event.key === 'Enter') ||
+      (event.metaKey && event.key === 'Enter')
+    ) {
       console.log('main submit called');
       chatRefs.current.forEach((ref, id) => {
         if (ref) {
