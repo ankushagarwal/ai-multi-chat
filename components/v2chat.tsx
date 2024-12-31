@@ -10,9 +10,10 @@ import React, {
 import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
 import { ModelSelector } from '@/components/modelselector';
-import { LoaderCircle, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { LoaderCircle, X, Maximize2, Minimize2 } from 'lucide-react';
 import { setModelIndex } from '@/lib/localStorage';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 // Types
 export interface ChatHandle {
   submit: () => void;
@@ -22,6 +23,9 @@ interface ChatHeaderProps {
   modelName: string;
   isLoading: boolean;
   onModelSelect: (value: string) => void;
+  isMaximized: boolean;
+  setMaximizedChatIndex: (index: number | null) => void;
+  index: number;
 }
 
 interface MessageProps {
@@ -33,7 +37,6 @@ const BUFFER_SIZE = 512;
 
 const bgHeaderColors = [
   'bg-emerald-200',
-  'bg-sky-200',
   'bg-amber-200',
   'bg-rose-200',
   'bg-red-200',
@@ -59,9 +62,12 @@ const getColorFromModelName = (modelName: string) => {
 
 // Sub-components
 const ChatHeader = ({
+  index,
+  isMaximized,
   modelName,
   isLoading,
   onModelSelect,
+  setMaximizedChatIndex,
 }: ChatHeaderProps) => {
   const bgColor = getColorFromModelName(modelName);
   return (
@@ -69,13 +75,36 @@ const ChatHeader = ({
       <div
         className={`flex items-center ${bgColor} backdrop-blur py-1 pl-3 pr-2 justify-between`}
       >
-        <ModelSelector
-          initialValue={modelName}
-          onSelectAction={onModelSelect}
-        />
-        {isLoading && (
-          <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
-        )}
+        <div className="flex items-center">
+          <ModelSelector
+            initialValue={modelName}
+            onSelectAction={onModelSelect}
+          />
+          {isLoading && (
+            <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
+          )}
+        </div>
+        <div className="flex items-center">
+          {isMaximized ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-transparent"
+              onClick={() => setMaximizedChatIndex(null)}
+            >
+              <Minimize2 className="size-4 text-zinc-700" />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-transparent size-7"
+              onClick={() => setMaximizedChatIndex(index)}
+            >
+              <Maximize2 className="size-4 text-zinc-700" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -174,55 +203,80 @@ const useMessageBuffer = (messages: any, isLoading: boolean) => {
 // Main Component
 const V2Chat = forwardRef<
   ChatHandle,
-  { inputValue: string; modelName: string; index: number }
->(({ inputValue, modelName, index }, ref) => {
-  const [selectedModel, setSelectedModel] = useState(modelName);
-  const { messages, handleSubmit, setInput, isLoading } = useChat({
-    api: `/api/chat?modelName=${selectedModel}`,
-  });
-
-  const bufferedLastAssistantMessage = useMessageBuffer(messages, isLoading);
-
-  useEffect(() => {
-    setInput(inputValue);
-  }, [inputValue, setInput]);
-
-  useImperativeHandle(ref, () => ({
-    submit: () => {
-      handleSubmit();
+  {
+    inputValue: string;
+    modelName: string;
+    index: number;
+    isMaximized: boolean;
+    className: string;
+    setMaximizedChatIndex: (index: number | null) => void;
+  }
+>(
+  (
+    {
+      inputValue,
+      modelName,
+      index,
+      isMaximized,
+      className,
+      setMaximizedChatIndex,
     },
-  }));
+    ref,
+  ) => {
+    const [selectedModel, setSelectedModel] = useState(modelName);
+    const { messages, handleSubmit, setInput, isLoading } = useChat({
+      api: `/api/chat?modelName=${selectedModel}`,
+    });
 
-  return (
-    <div
-      className="@container shrink-0 md:shrink md:min-w-96 snap-center rounded-md min-h-[250px] bg-background-100 size-full"
-      tabIndex={-1}
-    >
-      <div className="size-full rounded-md border border-gray-alpha-400">
-        <div className="size-full overflow-hidden rounded-md">
-          <div
-            className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none"
-            style={{ overflowAnchor: 'none' }}
-          >
-            <ChatHeader
-              modelName={modelName}
-              isLoading={isLoading}
-              onModelSelect={(model) => {
-                setSelectedModel(model);
-                setModelIndex(index, model);
-              }}
-            />
-            <MessageList
-              messages={messages}
-              bufferedLastAssistantMessage={bufferedLastAssistantMessage}
-              isLoading={isLoading}
-            />
+    const bufferedLastAssistantMessage = useMessageBuffer(messages, isLoading);
+
+    useEffect(() => {
+      setInput(inputValue);
+    }, [inputValue, setInput]);
+
+    useImperativeHandle(ref, () => ({
+      submit: () => {
+        handleSubmit();
+      },
+    }));
+
+    return (
+      <div
+        className={cn(
+          '@container shrink-0 md:shrink md:min-w-96 snap-center rounded-md min-h-[250px] bg-background-100 size-full',
+          className,
+        )}
+        tabIndex={-1}
+      >
+        <div className="size-full rounded-md border border-gray-alpha-400">
+          <div className="size-full overflow-hidden rounded-md">
+            <div
+              className="flex flex-col flex-no-wrap h-full overflow-y-auto overscroll-y-none"
+              style={{ overflowAnchor: 'none' }}
+            >
+              <ChatHeader
+                index={index}
+                setMaximizedChatIndex={setMaximizedChatIndex}
+                modelName={modelName}
+                isMaximized={isMaximized}
+                isLoading={isLoading}
+                onModelSelect={(model) => {
+                  setSelectedModel(model);
+                  setModelIndex(index, model);
+                }}
+              />
+              <MessageList
+                messages={messages}
+                bufferedLastAssistantMessage={bufferedLastAssistantMessage}
+                isLoading={isLoading}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 V2Chat.displayName = 'V2Chat';
 

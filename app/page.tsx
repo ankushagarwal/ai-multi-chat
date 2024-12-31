@@ -7,6 +7,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { getModels } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
+import { cn } from '@/lib/utils';
 export default function Home() {
   const [initialModels, setInitialModels] = useState<string[]>([]);
 
@@ -19,6 +20,10 @@ export default function Home() {
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  const [maximizedChatIndex, setMaximizedChatIndex] = useState<number | null>(
+    null,
+  );
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.focus();
@@ -26,9 +31,11 @@ export default function Home() {
   }, []);
 
   const submit = () => {
-    chatRefs.current.forEach((ref, id) => {
+    chatRefs.current.forEach((ref, index) => {
       if (ref) {
-        ref.submit();
+        if (maximizedChatIndex === null || maximizedChatIndex === index) {
+          ref.submit();
+        }
       }
     });
     setInputValue('');
@@ -52,10 +59,14 @@ export default function Home() {
             <div className="flex size-full p-2 space-x-2 overflow-x-auto snap-x snap-mandatory md:snap-none md:overflow-y-hidden border-b border-gray-alpha-400">
               {initialModels.map((model, index) => (
                 <V2Chat
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   key={index}
                   index={index}
                   inputValue={inputValue}
                   modelName={model}
+                  isMaximized={maximizedChatIndex === index}
+                  className={`${maximizedChatIndex !== null && maximizedChatIndex !== index ? 'hidden' : ''}`}
+                  setMaximizedChatIndex={setMaximizedChatIndex}
                   ref={(el) => {
                     if (el) {
                       chatRefs.current.set(index, el);
@@ -75,7 +86,7 @@ export default function Home() {
                   minRows={1}
                   maxRows={10}
                   className="bg-white grow p-2 focus:outline-none focus:border-zinc-500 border border-gray-alpha-400 rounded-md text-sm pr-10" // Added padding-right to make space for the button
-                  placeholder="Your message..."
+                  placeholder="Your message.. (Cmd+Enter to send)"
                   onKeyDown={handleKeyDown}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
