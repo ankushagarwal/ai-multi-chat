@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Header from '@/components/header';
 
 export const metadata: Metadata = {
   title: 'AI Multi Chat',
@@ -13,7 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        <div className="flex flex-col">
+          <Header />
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

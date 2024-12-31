@@ -10,8 +10,9 @@ import React, {
 import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
 import { ModelSelector } from '@/components/modelselector';
-import { LoaderCircle } from 'lucide-react';
-
+import { LoaderCircle, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { setModelIndex } from '@/lib/localStorage';
 // Types
 export interface ChatHandle {
   submit: () => void;
@@ -37,11 +38,16 @@ const ChatHeader = ({
   onModelSelect,
 }: ChatHeaderProps) => (
   <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
-    <div className="flex items-center bg-zinc-200 backdrop-blur justify-normal py-3 pl-3 pr-2">
-      <ModelSelector initialValue={modelName} onSelectAction={onModelSelect} />
-      {isLoading && (
-        <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
-      )}
+    <div className="flex items-center bg-zinc-200 backdrop-blur py-3 pl-3 pr-2 justify-between">
+      <div>
+        <ModelSelector
+          initialValue={modelName}
+          onSelectAction={onModelSelect}
+        />
+        {isLoading && (
+          <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
+        )}
+      </div>
     </div>
   </div>
 );
@@ -49,10 +55,14 @@ const ChatHeader = ({
 const Message = ({ content, isUser }: MessageProps) => (
   <div
     className={`px-3 @md:py-4 py-2.5 group transition-opacity message ${
-      isUser ? 'bg-zinc-100 dark:bg-zinc-900' : ''
+      isUser ? 'bg-sky-100 dark:bg-zinc-900' : ''
     }`}
   >
-    {isUser ? <pre>{content}</pre> : <Markdown>{content}</Markdown>}
+    {isUser ? (
+      <pre className="whitespace-pre-wrap">{content}</pre>
+    ) : (
+      <Markdown>{content}</Markdown>
+    )}
   </div>
 );
 
@@ -135,8 +145,8 @@ const useMessageBuffer = (messages: any, isLoading: boolean) => {
 // Main Component
 const V2Chat = forwardRef<
   ChatHandle,
-  { inputValue: string; modelName: string }
->(({ inputValue, modelName }, ref) => {
+  { inputValue: string; modelName: string; index: number }
+>(({ inputValue, modelName, index }, ref) => {
   const [selectedModel, setSelectedModel] = useState(modelName);
   const { messages, handleSubmit, setInput, isLoading } = useChat({
     api: `/api/chat?modelName=${selectedModel}`,
@@ -168,7 +178,10 @@ const V2Chat = forwardRef<
             <ChatHeader
               modelName={modelName}
               isLoading={isLoading}
-              onModelSelect={setSelectedModel}
+              onModelSelect={(model) => {
+                setSelectedModel(model);
+                setModelIndex(index, model);
+              }}
             />
             <MessageList
               messages={messages}

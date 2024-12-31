@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import SvgLogo from './svglogo';
 
 export default function Header() {
@@ -7,9 +8,11 @@ export default function Header() {
         <div className=" text-zinc-800 dark:text-zinc-100 pl-8">
           <SvgLogo />
         </div>
-        <div className=" text-lg font-bold text-zinc-800 dark:text-zinc-100">
-          AI <span className=" hidden min-[385px]:inline">Multi ChatBot</span>
-        </div>
+        <Link href="/">
+          <div className=" text-lg font-bold text-zinc-800 dark:text-zinc-100">
+            AI <span className=" hidden min-[385px]:inline">Multi ChatBot</span>
+          </div>
+        </Link>
       </div>
     </div>
   );
