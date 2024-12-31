@@ -6,6 +6,22 @@ export const getNumModels = () => {
   return numModels ? Number.parseInt(numModels) : 3;
 };
 
+export const setNumModelsLocalStorage = (numModels: number) => {
+  console.log('setNumModelsLocalStorage', numModels);
+  if (typeof window === 'undefined') {
+    return;
+  }
+  localStorage.setItem('settings_numModels', numModels.toString());
+  const modelNames = localStorage.getItem('settings_modelNames');
+  const models = modelNames ? JSON.parse(modelNames) : [];
+
+  while (models.length < numModels) {
+    models.push('gpt-4o-mini');
+  }
+
+  localStorage.setItem('settings_modelNames', JSON.stringify(models));
+};
+
 export const setModelIndex = (index: number, model: string) => {
   if (typeof window === 'undefined') {
     return;

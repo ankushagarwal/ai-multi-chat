@@ -1,6 +1,7 @@
 'use client';
 import LeftSidebar from '@/components/leftsidebar';
 import { Label } from '@/components/ui/label';
+import { setNumModelsLocalStorage } from '@/lib/localStorage';
 import { useState, useEffect } from 'react';
 
 const DefaultNumModelSelector = () => {
@@ -12,9 +13,10 @@ const DefaultNumModelSelector = () => {
     const storedNum = localStorage.getItem('settings_numModels');
     if (storedNum) {
       setNumModels(storedNum);
+      setNumModelsLocalStorage(Number.parseInt(storedNum));
     } else {
       setNumModels('3');
-      localStorage.setItem('settings_numModels', '3');
+      setNumModelsLocalStorage(3);
     }
   }, []);
 
@@ -22,7 +24,7 @@ const DefaultNumModelSelector = () => {
   const handleChange = (event: any) => {
     const selectedValue = event.target.value;
     setNumModels(selectedValue);
-    localStorage.setItem('settings_numModels', selectedValue);
+    setNumModelsLocalStorage(Number.parseInt(selectedValue));
   };
 
   return (
@@ -40,6 +42,12 @@ const DefaultNumModelSelector = () => {
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
       </select>
     </div>
   );
