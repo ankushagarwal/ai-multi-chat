@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { getModels } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
+import { Send } from 'lucide-react';
 export default function Home() {
   const [initialModels, setInitialModels] = useState<string[]>([]);
 
@@ -68,23 +69,24 @@ export default function Home() {
             <footer className="flex bg-zinc-100 ">
               {/* {' '} */}
               {/* Added relative positioning */}
-              <div className="flex w-full m-4 items-center">
+              <div className="flex w-full m-4 items-center relative">
                 <TextareaAutosize
                   ref={textareaRef}
                   minRows={1}
                   maxRows={10}
-                  className="bg-white grow p-2 focus:outline-none focus:border-zinc-500 border border-gray-alpha-400 rounded-md text-sm"
+                  className="bg-white grow p-2 focus:outline-none focus:border-zinc-500 border border-gray-alpha-400 rounded-md text-sm pr-10" // Added padding-right to make space for the button
                   placeholder="Your message..."
                   onKeyDown={handleKeyDown}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                 />
                 <Button
-                  className="text-xs h-8 ml-2"
+                  className="text-xs size-8 absolute right-1 bottom-1 rounded-full bg-zinc-800 text-zinc-100"
                   variant="default"
                   onClick={submit}
+                  size="icon"
                 >
-                  Submit
+                  <Send />
                 </Button>
               </div>
             </footer>
