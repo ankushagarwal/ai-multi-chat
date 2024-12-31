@@ -39,15 +39,10 @@ const ChatHeader = ({
 }: ChatHeaderProps) => (
   <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
     <div className="flex items-center bg-zinc-200 backdrop-blur py-3 pl-3 pr-2 justify-between">
-      <div>
-        <ModelSelector
-          initialValue={modelName}
-          onSelectAction={onModelSelect}
-        />
-        {isLoading && (
-          <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
-        )}
-      </div>
+      <ModelSelector initialValue={modelName} onSelectAction={onModelSelect} />
+      {isLoading && (
+        <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
+      )}
     </div>
   </div>
 );

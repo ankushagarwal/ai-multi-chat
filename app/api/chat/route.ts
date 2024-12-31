@@ -1,4 +1,6 @@
-import { openai } from '@ai-sdk/openai';
+// Temporary fix for using o3-mini
+// Wait for PR https://github.com/vercel/ai/pull/4227 to get merged to get official support
+import { openai } from '@/lib/openai-tmp';
 import { google } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { openrouter } from '@openrouter/ai-sdk-provider';
