@@ -31,21 +31,55 @@ interface MessageProps {
 
 const BUFFER_SIZE = 512;
 
+const bgHeaderColors = [
+  'bg-emerald-200',
+  'bg-sky-200',
+  'bg-amber-200',
+  'bg-rose-200',
+  'bg-red-200',
+  'bg-orange-200',
+  'bg-yellow-200',
+  'bg-green-200',
+  'bg-teal-200',
+  'bg-blue-200',
+  'bg-indigo-200',
+  'bg-purple-200',
+  'bg-pink-200',
+];
+
+// Function to hash the model name and return a color
+const getColorFromModelName = (modelName: string) => {
+  let hash = 8;
+  for (let i = 0; i < modelName.length; i++) {
+    hash = modelName.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % bgHeaderColors.length;
+  return bgHeaderColors[index];
+};
+
 // Sub-components
 const ChatHeader = ({
   modelName,
   isLoading,
   onModelSelect,
-}: ChatHeaderProps) => (
-  <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b">
-    <div className="flex items-center bg-zinc-200 backdrop-blur py-3 pl-3 pr-2 justify-between">
-      <ModelSelector initialValue={modelName} onSelectAction={onModelSelect} />
-      {isLoading && (
-        <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
-      )}
+}: ChatHeaderProps) => {
+  const bgColor = getColorFromModelName(modelName);
+  return (
+    <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b text-sm ">
+      <div
+        className={`flex items-center ${bgColor} backdrop-blur py-1 pl-3 pr-2 justify-between`}
+      >
+        <ModelSelector
+          initialValue={modelName}
+          onSelectAction={onModelSelect}
+        />
+        {isLoading && (
+          <LoaderCircle className="animate-spin text-zinc-500 ml-4" />
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Message = ({ content, isUser }: MessageProps) => (
   <div

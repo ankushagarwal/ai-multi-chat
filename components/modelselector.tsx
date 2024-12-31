@@ -39,7 +39,7 @@ export function ModelSelector({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="justify-between"
+            className="justify-between h-6 p-2 m-0"
           >
             {value
               ? modelList.find((model) => model.name === value)?.name
