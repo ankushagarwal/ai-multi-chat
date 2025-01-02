@@ -81,9 +81,12 @@ export default function Home() {
       }
     });
     if (conversationId === '') {
+      console.log('Creating new conversation');
+      console.log('inputValue', inputValue);
       const truncatedInputValue =
         inputValue.length > 50 ? inputValue.slice(0, 50) : inputValue;
       const newConversationId = createConversation(truncatedInputValue);
+      console.log('newConversationId', newConversationId);
       fetch('/api/completion', {
         method: 'POST',
         headers: {
