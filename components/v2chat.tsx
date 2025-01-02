@@ -60,6 +60,20 @@ const ChatHeader = ({
   setMaximizedChatIndex,
 }: ChatHeaderProps) => {
   const bgColor = bgHeaderColors[index % bgHeaderColors.length];
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isMaximized) {
+        setMaximizedChatIndex(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMaximized, setMaximizedChatIndex]);
+
   return (
     <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b text-sm ">
       <div

@@ -33,7 +33,7 @@ export default function Home() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const modelSet = urlParams.get('modelSet');
-    console.log('modelSet', modelSet);
+    // console.log('modelSet', modelSet);
     if (modelSet === 'fast') {
       setInitialModels([
         'gpt-4o-mini',
