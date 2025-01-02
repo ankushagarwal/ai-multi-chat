@@ -17,8 +17,10 @@ import { Send } from 'lucide-react';
 export default function Home() {
   const [initialModels, setInitialModels] = useState<string[]>([]);
   const [conversationId, setConversationId] = useState<string>('');
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(window !== undefined && window.innerWidth <= 768);
     const urlParams = new URLSearchParams(window.location.search);
     const conversationId = urlParams.get('conversationId');
     const modelSet = urlParams.get('modelSet');
@@ -148,8 +150,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-row w-full">
-      <LeftSidebar />
-      <div className="w-[calc(100dvw-208px)]">
+      {!isMobile && <LeftSidebar />}
+      <div className={isMobile ? 'w-full' : 'w-[calc(100dvw-208px)]'}>
         <main className="flex overflow-hidden h-[calc(100svh-57px)]">
           <div className="flex flex-col flex-1 h-full overflow-x-auto bg-background-100">
             <div className="flex size-full p-2 space-x-2 overflow-x-auto snap-x snap-mandatory md:snap-none md:overflow-y-hidden border-b border-gray-alpha-400">
