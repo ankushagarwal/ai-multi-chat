@@ -11,7 +11,11 @@ import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
 import { ModelSelector } from '@/components/modelselector';
 import { LoaderCircle, Maximize2, Minimize2 } from 'lucide-react';
-import { setModelIndex, updateConversation } from '@/lib/localStorage';
+import {
+  getConversation,
+  setModelIndex,
+  updateConversation,
+} from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 // Types
@@ -238,9 +242,24 @@ const V2Chat = forwardRef<
     },
     ref,
   ) => {
+    const conversation = getConversation(conversationId);
+    let conversationMessages: any[] = [];
+
+    if (conversation) {
+      if (index >= 0 && index < conversation.chats.length) {
+        conversationMessages = conversation.chats[index].messages ?? [];
+      } else {
+        // console.warn(
+        //   `Chat index ${index} is out of bounds for conversation ${conversationId}`,
+        // );
+        conversationMessages = [];
+      }
+    }
+
     const [selectedModel, setSelectedModel] = useState(modelName);
     const { messages, handleSubmit, setInput, isLoading } = useChat({
       api: `/api/chat?modelName=${selectedModel}`,
+      initialMessages: conversationMessages,
     });
 
     const bufferedLastAssistantMessage = useMessageBuffer(

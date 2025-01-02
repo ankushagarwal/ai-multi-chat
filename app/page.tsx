@@ -5,7 +5,11 @@ import LeftSidebar from '@/components/leftsidebar';
 import V2Chat, { type ChatHandle } from '@/components/v2chat';
 import { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { createConversation, getModels } from '@/lib/localStorage';
+import {
+  createConversation,
+  getConversation,
+  getModels,
+} from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 
@@ -17,6 +21,10 @@ export default function Home() {
     const urlParams = new URLSearchParams(window.location.search);
     const conversationId = urlParams.get('conversationId');
     if (conversationId) {
+      const conversation = getConversation(conversationId);
+      if (conversation !== null) {
+        setInitialModels(conversation.chats.map((chat) => chat.modelId));
+      }
       setConversationId(conversationId);
     }
   }, []);

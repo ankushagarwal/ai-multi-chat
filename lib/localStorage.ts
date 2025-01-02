@@ -80,7 +80,7 @@ interface Chat {
 }
 
 // Define the structure of a Conversation with a creation timestamp
-interface Conversation {
+export interface Conversation {
   id: string;
   title: string;
   chats: Chat[];
@@ -203,4 +203,9 @@ export const getAllConversationsSorted = (): Conversation[] => {
   conversationArray.sort((a, b) => b.createdAt - a.createdAt);
 
   return conversationArray;
+};
+
+export const getConversation = (id: string): Conversation | null => {
+  const conversations = getAllConversations();
+  return conversations[id] || null;
 };
