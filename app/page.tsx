@@ -72,7 +72,7 @@ export default function Home() {
     }
   }, []);
 
-  const submit = () => {
+  const submit = (overrideInputValue?: string) => {
     chatRefs.current.forEach((ref, index) => {
       if (ref) {
         if (maximizedChatIndex === null || maximizedChatIndex === index) {
@@ -83,16 +83,17 @@ export default function Home() {
     if (conversationId === '') {
       console.log('Creating new conversation');
       console.log('inputValue', inputValue);
-      const truncatedInputValue =
-        inputValue.length > 50 ? inputValue.slice(0, 50) : inputValue;
-      const newConversationId = createConversation(truncatedInputValue);
+      const actualInputValue = overrideInputValue
+        ? overrideInputValue
+        : inputValue;
+      const newConversationId = createConversation(actualInputValue);
       console.log('newConversationId', newConversationId);
       fetch('/api/completion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: inputValue }),
+        body: JSON.stringify({ message: actualInputValue }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -126,9 +127,11 @@ export default function Home() {
       };
 
       const intervalId = setInterval(() => {
+        console.log('Checking if chatRefs are ready and calling submit');
         if (checkChatRefsReady()) {
+          console.log('ChatRefs are ready, calling submit, query: ', query);
           clearInterval(intervalId);
-          submit();
+          submit(query);
         }
       }, 200);
     }
@@ -190,7 +193,7 @@ export default function Home() {
                 <Button
                   className="text-xs size-8 absolute right-1 bottom-1 rounded-full bg-zinc-800 text-zinc-100"
                   variant="default"
-                  onClick={submit}
+                  onClick={() => submit()}
                   size="icon"
                 >
                   <Send />
