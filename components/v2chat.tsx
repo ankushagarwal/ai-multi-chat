@@ -11,7 +11,7 @@ import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
 import { ModelSelector } from '@/components/modelselector';
 import { LoaderCircle, Maximize2, Minimize2 } from 'lucide-react';
-import { setModelIndex } from '@/lib/localStorage';
+import { setModelIndex, updateConversation } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 // Types
@@ -156,7 +156,13 @@ const MessageList = ({
 };
 
 // Custom Hook for message buffering
-const useMessageBuffer = (messages: any, isLoading: boolean) => {
+const useMessageBuffer = (
+  messages: any,
+  isLoading: boolean,
+  index: number,
+  conversationId: string,
+  modelName: string,
+) => {
   const [bufferedLastAssistantMessage, setBufferedLastAssistantMessage] =
     useState<string>('');
 
@@ -176,13 +182,33 @@ const useMessageBuffer = (messages: any, isLoading: boolean) => {
       !isLoading
     ) {
       setBufferedLastAssistantMessage(lastMessage.content);
+      console.log('Completed last message for chat', index);
+      updateConversation(
+        conversationId,
+        {
+          chats: [
+            {
+              modelId: modelName,
+              messages: messages,
+            },
+          ],
+        },
+        index,
+      );
     } else if (
       lastMessage.content.length < bufferedLastAssistantMessage.length &&
       isLoading
     ) {
       setBufferedLastAssistantMessage('');
     }
-  }, [messages, bufferedLastAssistantMessage.length, isLoading]);
+  }, [
+    messages,
+    bufferedLastAssistantMessage.length,
+    isLoading,
+    conversationId,
+    index,
+    modelName,
+  ]);
 
   return bufferedLastAssistantMessage;
 };
@@ -196,6 +222,7 @@ const V2Chat = forwardRef<
     index: number;
     isMaximized: boolean;
     className: string;
+    conversationId: string;
     setMaximizedChatIndex: (index: number | null) => void;
   }
 >(
@@ -207,6 +234,7 @@ const V2Chat = forwardRef<
       isMaximized,
       className,
       setMaximizedChatIndex,
+      conversationId,
     },
     ref,
   ) => {
@@ -215,7 +243,13 @@ const V2Chat = forwardRef<
       api: `/api/chat?modelName=${selectedModel}`,
     });
 
-    const bufferedLastAssistantMessage = useMessageBuffer(messages, isLoading);
+    const bufferedLastAssistantMessage = useMessageBuffer(
+      messages,
+      isLoading,
+      index,
+      conversationId,
+      modelName,
+    );
 
     useEffect(() => {
       setInput(inputValue);

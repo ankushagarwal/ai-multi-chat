@@ -3,6 +3,7 @@ import { google } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -17,6 +18,10 @@ function addPrompt(modelName: string, messages: any[]) {
       }
     }
   }
+}
+
+export async function GET(req: NextRequest) {
+  return NextResponse.json({ message: 'Hello World' });
 }
 
 export async function POST(req: NextRequest) {

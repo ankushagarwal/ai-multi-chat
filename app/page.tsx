@@ -5,12 +5,21 @@ import LeftSidebar from '@/components/leftsidebar';
 import V2Chat, { type ChatHandle } from '@/components/v2chat';
 import { useEffect, useRef, useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { getModels } from '@/lib/localStorage';
+import { createConversation, getModels } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 
 export default function Home() {
   const [initialModels, setInitialModels] = useState<string[]>([]);
+  const [conversationId, setConversationId] = useState<string>('');
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const conversationId = urlParams.get('conversationId');
+    if (conversationId) {
+      setConversationId(conversationId);
+    }
+  }, []);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -62,6 +71,12 @@ export default function Home() {
         }
       }
     });
+    if (conversationId === '') {
+      const truncatedInputValue =
+        inputValue.length > 50 ? inputValue.slice(0, 50) : inputValue;
+      const newConversationId = createConversation(truncatedInputValue);
+      setConversationId(newConversationId);
+    }
     setInputValue('');
   };
 
@@ -119,6 +134,7 @@ export default function Home() {
                   isMaximized={maximizedChatIndex === index}
                   className={`${maximizedChatIndex !== null && maximizedChatIndex !== index ? 'hidden' : ''}`}
                   setMaximizedChatIndex={setMaximizedChatIndex}
+                  conversationId={conversationId}
                   ref={(el) => {
                     if (el) {
                       chatRefs.current.set(index, el);
