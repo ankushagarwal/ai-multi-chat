@@ -21,19 +21,17 @@ export default function Home() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const conversationId = urlParams.get('conversationId');
+    const modelSet = urlParams.get('modelSet');
+
     if (conversationId) {
       const conversation = getConversation(conversationId);
       if (conversation !== null) {
         setInitialModels(conversation.chats.map((chat) => chat.modelId));
+        setConversationId(conversationId);
+        return;
       }
-      setConversationId(conversationId);
     }
-  }, []);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const modelSet = urlParams.get('modelSet');
-    // console.log('modelSet', modelSet);
     if (modelSet === 'fast') {
       setInitialModels([
         'gpt-4o-mini',
