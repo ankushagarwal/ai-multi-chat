@@ -56,8 +56,7 @@ const DefaultNumModelSelector = () => {
 export default function Settings() {
   return (
     <div className="flex flex-row w-full">
-      <LeftSidebar />
-      <div className="w-[calc(100dvw-56px)]">
+      <div className="w-full">
         <div className="flex flex-col p-4">
           <h1 className="text-2xl font-bold">Settings</h1>
           <DefaultNumModelSelector />
