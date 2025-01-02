@@ -46,17 +46,17 @@ export const getModels = (): string[] => {
   if (!modelNames) {
     setModelIndex(0, 'gpt-4o-mini');
     setModelIndex(1, 'gpt-4o');
-    setModelIndex(2, 'gpt-4o-mini');
-    setModelIndex(3, 'gpt-4o');
-    setModelIndex(4, 'gpt-4o-mini');
-    setModelIndex(5, 'gpt-4o');
+    setModelIndex(2, 'gemini-1.5-flash');
+    setModelIndex(3, 'gemini-1.5-pro');
+    setModelIndex(4, 'deepseek/deepseek-chat');
+    setModelIndex(5, 'gpt-4o-mini');
     return [
       'gpt-4o-mini',
       'gpt-4o',
+      'gemini-1.5-flash',
+      'gemini-1.5-pro',
+      'deepseek/deepseek-chat',
       'gpt-4o-mini',
-      'gpt-4o',
-      'gpt-4o-mini',
-      'gpt-4o',
     ].slice(0, getNumModels());
   }
   const models = JSON.parse(modelNames);

@@ -36,29 +36,15 @@ interface MessageProps {
 const BUFFER_SIZE = 512;
 
 const bgHeaderColors = [
-  'bg-emerald-200',
-  'bg-amber-200',
-  'bg-rose-200',
-  'bg-red-200',
-  'bg-orange-200',
-  'bg-yellow-200',
-  'bg-green-200',
-  'bg-teal-200',
-  'bg-blue-200',
-  'bg-indigo-200',
-  'bg-purple-200',
   'bg-pink-200',
+  'bg-blue-200',
+  'bg-green-200',
+  'bg-red-200',
+  'bg-indigo-200',
+  'bg-orange-200',
+  'bg-purple-200',
+  'bg-teal-200',
 ];
-
-// Function to hash the model name and return a color
-const getColorFromModelName = (modelName: string) => {
-  let hash = 8;
-  for (let i = 0; i < modelName.length; i++) {
-    hash = modelName.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % bgHeaderColors.length;
-  return bgHeaderColors[index];
-};
 
 // Sub-components
 const ChatHeader = ({
@@ -69,7 +55,7 @@ const ChatHeader = ({
   onModelSelect,
   setMaximizedChatIndex,
 }: ChatHeaderProps) => {
-  const bgColor = getColorFromModelName(modelName);
+  const bgColor = bgHeaderColors[index % bgHeaderColors.length];
   return (
     <div className="sticky top-0 z-10 shrink-0 min-w-0 min-h-0 border-b text-sm ">
       <div

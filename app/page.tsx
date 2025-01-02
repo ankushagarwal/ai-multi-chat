@@ -7,7 +7,6 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { getModels } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
-import { cn } from '@/lib/utils';
 export default function Home() {
   const [initialModels, setInitialModels] = useState<string[]>([]);
 
