@@ -10,7 +10,7 @@ import React, {
 import { useChat } from 'ai/react';
 import { Markdown } from '@/components/markdown';
 import { ModelSelector } from '@/components/modelselector';
-import { LoaderCircle, X, Maximize2, Minimize2 } from 'lucide-react';
+import { LoaderCircle, Maximize2, Minimize2 } from 'lucide-react';
 import { setModelIndex } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

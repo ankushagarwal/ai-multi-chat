@@ -64,6 +64,34 @@ export default function Home() {
     });
     setInputValue('');
   };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('query');
+    if (query) {
+      setInputValue(query);
+      urlParams.delete('query');
+      const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+      window.history.replaceState({}, '', newUrl);
+      const checkChatRefsReady = () => {
+        for (const ref of chatRefs.current.values()) {
+          if (!ref) {
+            return false;
+          }
+        }
+        return true;
+      };
+
+      const intervalId = setInterval(() => {
+        if (checkChatRefsReady()) {
+          clearInterval(intervalId);
+          submit();
+        }
+      }, 200);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const isSmallScreen = window.innerWidth <= 768; // Example breakpoint for small screens
     if (
