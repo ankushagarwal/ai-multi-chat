@@ -12,7 +12,7 @@ function addPrompt(modelName: string, messages: any[]) {
     for (let i = messages.length - 1; i >= 0; i--) {
       if (messages[i].role === 'user') {
         messages[i].content +=
-          ' For questions like coding or other long form questions, format your responses in markdown format.';
+          '. Use triple backticks for any code blocks in your response.';
         break;
       }
     }

@@ -107,6 +107,7 @@ const Message = ({ content, isUser }: MessageProps) => (
     ) : (
       <Markdown>{content}</Markdown>
     )}
+    <pre className="hidden debug-message">{content}</pre>
   </div>
 );
 

@@ -1,5 +1,6 @@
 'use client';
 
+// import { useSearchParams } from 'next/navigation';
 import LeftSidebar from '@/components/leftsidebar';
 import V2Chat, { type ChatHandle } from '@/components/v2chat';
 import { useEffect, useRef, useState } from 'react';
@@ -7,11 +8,35 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { getModels } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
+
 export default function Home() {
   const [initialModels, setInitialModels] = useState<string[]>([]);
 
   useEffect(() => {
-    setInitialModels(getModels());
+    const urlParams = new URLSearchParams(window.location.search);
+    const modelSet = urlParams.get('modelSet');
+    console.log('modelSet', modelSet);
+    if (modelSet === 'fast') {
+      setInitialModels([
+        'gpt-4o-mini',
+        'gemini-1.5-flash',
+        'deepseek/deepseek-chat',
+        'gpt-4o',
+        'anthropic/claude-3.5-sonnet:beta',
+      ]);
+    } else if (modelSet === 'deep') {
+      setInitialModels([
+        'o1',
+        'o1-mini',
+        'o3-mini',
+        'gpt-4o',
+        'anthropic/claude-3.5-sonnet:beta',
+        'gemini-1.5-pro',
+        'deepseek/deepseek-chat',
+      ]);
+    } else {
+      setInitialModels(getModels());
+    }
   }, []);
 
   const chatRefs = useRef<Map<number, ChatHandle>>(new Map());

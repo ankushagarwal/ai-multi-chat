@@ -2,6 +2,8 @@
 // https://platform.openai.com/docs/models
 // https://ai.google.dev/gemini-api/docs/models/gemini
 export const modelList = [
+  // llama
+  { name: 'meta-llama/llama-3.3-70b-instruct' },
   // anthropic
   { name: 'anthropic/claude-3.5-sonnet:beta' },
   // openai
