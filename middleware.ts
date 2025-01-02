@@ -3,6 +3,9 @@ import type { NextRequest } from 'next/server';
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
+  const host = request.headers.get('host');
+  const isLocalhost = host === 'localhost:3000';
+
   // Go to /authenticate to set the authenticated cookie
   // without the cookie, the user will be redirected to /404
   // this is a hack to prevent someone from accessing the app without logging in
@@ -12,7 +15,7 @@ export function middleware(request: NextRequest) {
     return response;
   }
   const authenticated = request.cookies.get('authenticated');
-  if (!authenticated) {
+  if (!authenticated && !isLocalhost) {
     return NextResponse.redirect(new URL('/404', request.url));
   }
   return NextResponse.next();
