@@ -11,11 +11,12 @@ export function middleware(request: NextRequest) {
   // this is a hack to prevent someone from accessing the app without logging in
   if (request.nextUrl.pathname === "/authenticate") {
     const response = NextResponse.redirect(new URL("/", request.url));
-    const expirationDate = new Date();
-    expirationDate.setFullYear(expirationDate.getFullYear() + 10);
+    // const expirationDate = new Date();
+    // expirationDate.setFullYear(expirationDate.getFullYear() + 10);
 
     response.cookies.set("authenticated", "true", {
-      expires: expirationDate,
+      // expires: expirationDate,
+      maxAge: 31556952000,
     });
     return response;
   }
