@@ -19,12 +19,16 @@ export default function LeftSidebar() {
   }, []);
 
   return (
-    <div className="z-30 sticky top-[57px] shrink-0 border-r w-48 bg-background-100 px-4 md:flex flex-col items-center justify-between h-[calc(100dvh-57px)]">
+    <div className="z-30 sticky top-[57px] shrink-0 border-r w-52 bg-background-100 px-4 md:flex flex-col items-center justify-between h-[calc(100dvh-57px)]">
       <div className="flex flex-col top-[57px] size-full">
         <div className="flex flex-col gap-1 py-1 w-full">
           <div className="text-sm font-bold">Recent Conversations</div>
           {conversations.map((conversation) => (
-            <div key={conversation.id} className="text-sm truncate">
+            <div
+              key={conversation.id}
+              className="text-sm truncate"
+              title={conversation.title}
+            >
               <a href={`/?conversationId=${conversation.id}`}>
                 <div className="hover:bg-gray-200 p-1 rounded">
                   {conversation.title}
