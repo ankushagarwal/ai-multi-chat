@@ -152,7 +152,7 @@ export const updateConversation = (
   updatedFields: Partial<Pick<Conversation, 'title' | 'chats'>>,
   chatIndex?: number,
 ): boolean => {
-  console.log('updateConversation', id, updatedFields, chatIndex);
+  // console.log('updateConversation', id, updatedFields, chatIndex);
 
   const conversations = getAllConversations();
   const conversation = conversations[id];

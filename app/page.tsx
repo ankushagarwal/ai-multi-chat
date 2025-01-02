@@ -9,6 +9,7 @@ import {
   createConversation,
   getConversation,
   getModels,
+  updateConversation,
 } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
@@ -83,6 +84,22 @@ export default function Home() {
       const truncatedInputValue =
         inputValue.length > 50 ? inputValue.slice(0, 50) : inputValue;
       const newConversationId = createConversation(truncatedInputValue);
+      fetch('/api/completion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: inputValue }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const { title } = data;
+          console.log('Generated title:', title);
+          updateConversation(newConversationId, { title });
+        })
+        .catch((error) => {
+          console.error('Error generating title:', error);
+        });
       setConversationId(newConversationId);
     }
     setInputValue('');
@@ -128,7 +145,7 @@ export default function Home() {
   return (
     <div className="flex flex-row w-full">
       <LeftSidebar />
-      <div className="w-[calc(100dvw-56px)]">
+      <div className="w-[calc(100dvw-208px)]">
         <main className="flex overflow-hidden h-[calc(100svh-57px)]">
           <div className="flex flex-col flex-1 h-full overflow-x-auto bg-background-100">
             <div className="flex size-full p-2 space-x-2 overflow-x-auto snap-x snap-mandatory md:snap-none md:overflow-y-hidden border-b border-gray-alpha-400">

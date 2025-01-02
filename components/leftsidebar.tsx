@@ -1,12 +1,9 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
   type Conversation,
   getAllConversationsSorted,
 } from '@/lib/localStorage';
-import { Settings } from 'lucide-react';
-import Link from 'next/link';
 
 import { useEffect, useState } from 'react';
 

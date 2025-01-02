@@ -186,7 +186,7 @@ const useMessageBuffer = (
       !isLoading
     ) {
       setBufferedLastAssistantMessage(lastMessage.content);
-      console.log('Completed last message for chat', index);
+      // console.log('Completed last message for chat', index);
       updateConversation(
         conversationId,
         {

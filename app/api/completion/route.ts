@@ -19,5 +19,7 @@ export async function POST(req: NextRequest) {
     }),
   });
 
+  // console.log('Generated title:"', title, '" for message:', message);
+
   return NextResponse.json({ title });
 }
