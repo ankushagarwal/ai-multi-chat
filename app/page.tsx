@@ -40,7 +40,6 @@ export default function Home() {
         'gemini-1.5-flash',
         'deepseek/deepseek-chat',
         'gpt-4o',
-        'anthropic/claude-3.5-sonnet:beta',
       ]);
     } else if (modelSet === 'deep') {
       setInitialModels([
