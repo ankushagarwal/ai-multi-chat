@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from 'react';
 
 interface SidebarContextType {
   isSidebarVisible: boolean;
@@ -10,11 +16,27 @@ interface SidebarContextType {
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 export const SidebarProvider = ({ children }: { children: ReactNode }) => {
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
+    // Initialize state from localStorage
+    if (typeof window !== 'undefined') {
+      const storedState = localStorage.getItem('isSidebarVisible');
+      return storedState ? JSON.parse(storedState) : false;
+    }
+    return false;
+  });
 
   const toggleSidebar = () => {
-    setIsSidebarVisible((prev) => !prev);
+    setIsSidebarVisible((prev: boolean) => {
+      const newState = !prev;
+      localStorage.setItem('isSidebarVisible', JSON.stringify(newState));
+      return newState;
+    });
   };
+
+  useEffect(() => {
+    // Update localStorage whenever isSidebarVisible changes
+    localStorage.setItem('isSidebarVisible', JSON.stringify(isSidebarVisible));
+  }, [isSidebarVisible]);
 
   return (
     <SidebarContext.Provider value={{ isSidebarVisible, toggleSidebar }}>

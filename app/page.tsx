@@ -41,6 +41,8 @@ export default function Home() {
         'gemini-1.5-flash',
         'deepseek/deepseek-chat',
         'gpt-4o',
+        'anthropic/claude-3.5-haiku:beta',
+        'meta-llama/llama-3.1-70b-instruct',
       ]);
     } else if (modelSet === 'deep') {
       setInitialModels([

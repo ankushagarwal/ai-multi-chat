@@ -3,9 +3,10 @@
 // https://ai.google.dev/gemini-api/docs/models/gemini
 export const modelList = [
   // llama
-  { name: 'meta-llama/llama-3.3-70b-instruct' },
+  { name: 'meta-llama/llama-3.1-70b-instruct' },
   // anthropic
   { name: 'anthropic/claude-3.5-sonnet:beta' },
+  { name: 'anthropic/claude-3.5-haiku:beta' },
   // openai
   { name: 'gpt-4o' },
   { name: 'gpt-4o-mini' },

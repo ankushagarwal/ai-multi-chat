@@ -1,8 +1,7 @@
 'use client';
 
-import SvgLogo from './svglogo';
 import { Button } from '@/components/ui/button';
-import { Settings, Menu } from 'lucide-react';
+import { Settings, Menu, Zap, BrainCircuit, Sparkles } from 'lucide-react';
 import { useSidebar } from '@/context/SidebarContext';
 
 export default function Header() {
@@ -19,21 +18,30 @@ export default function Header() {
         >
           <Menu />
         </Button>
-        <div className="text-zinc-800 dark:text-zinc-100">
-          <SvgLogo />
-        </div>
-        <a href="/">
-          <div className="text-lg font-bold text-zinc-800 dark:text-zinc-100">
-            AI <span className="hidden min-[385px]:inline">Multi ChatBot</span>
+        <a
+          href="/"
+          className="text-md font-bold text-zinc-800 dark:text-zinc-100"
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4" />
+            <span className="">AI Multi ChatBot</span>
           </div>
         </a>
       </div>
       <div className="flex items-center pr-2 gap-2">
-        <a className="text-sm underline font-bold" href="/?modelSet=fast">
-          Fast Mode
+        <a
+          className="text-sm underline flex items-center"
+          href="/?modelSet=fast"
+        >
+          <Zap className="size-4" />
+          Fast Models
         </a>
-        <a className="text-sm underline font-bold" href="/?modelSet=deep">
-          Deep Mode
+        <a
+          className="text-sm underline flex items-center"
+          href="/?modelSet=deep"
+        >
+          <BrainCircuit className="size-4" />
+          Deep Models
         </a>
         <Button size="icon" variant="ghost" asChild>
           <a href="/settings">

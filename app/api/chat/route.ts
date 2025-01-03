@@ -35,7 +35,9 @@ export async function POST(req: NextRequest) {
   // if modelName contains "gemini", use google, if it starts with gpt or starts with o, use openai, otherwise use openrouter
   let model: any;
   if (modelName.includes('gemini')) {
-    model = google(modelName);
+    model = google(modelName, {
+      useSearchGrounding: true,
+    });
   } else if (modelName.startsWith('gpt') || modelName.startsWith('o')) {
     model = openai(modelName);
   } else {
