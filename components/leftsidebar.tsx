@@ -19,7 +19,7 @@ export default function LeftSidebar() {
     <div className="z-30 sticky top-[57px] shrink-0 border-r w-52 bg-background-100 px-4 md:flex flex-col items-center justify-between h-[calc(100dvh-57px)]">
       <div className="flex flex-col top-[57px] size-full">
         <div className="flex flex-col gap-1 py-1 w-full">
-          <div className="text-sm font-bold">Recent Conversations</div>
+          <div className="text-md font-bold">Conversations</div>
           {conversations.map((conversation) => (
             <div
               key={conversation.id}

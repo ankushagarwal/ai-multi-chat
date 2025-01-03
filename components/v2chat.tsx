@@ -297,7 +297,7 @@ const V2Chat = forwardRef<
     return (
       <div
         className={cn(
-          '@container shrink-0 md:shrink md:min-w-96 snap-center rounded-md min-h-[250px] bg-background-100 size-full',
+          '@container shrink-0 md:shrink md:min-w-[420px] snap-center rounded-md min-h-[250px] bg-background-100 size-full',
           className,
         )}
         tabIndex={-1}

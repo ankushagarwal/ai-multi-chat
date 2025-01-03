@@ -1,6 +1,5 @@
 'use client';
 
-// import { useSearchParams } from 'next/navigation';
 import LeftSidebar from '@/components/leftsidebar';
 import V2Chat, { type ChatHandle } from '@/components/v2chat';
 import { useEffect, useRef, useState } from 'react';
@@ -13,8 +12,10 @@ import {
 } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
+import { useSidebar } from '@/context/SidebarContext';
 
 export default function Home() {
+  const { isSidebarVisible } = useSidebar();
   const [initialModels, setInitialModels] = useState<string[]>([]);
   const [conversationId, setConversationId] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
@@ -149,8 +150,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-row w-full">
-      {!isMobile && <LeftSidebar />}
-      <div className={isMobile ? 'w-full' : 'w-[calc(100dvw-208px)]'}>
+      {isSidebarVisible && <LeftSidebar />}
+      <div className={isSidebarVisible ? 'w-[calc(100dvw-208px)]' : 'w-full'}>
         <main className="flex overflow-hidden h-[calc(100svh-57px)]">
           <div className="flex flex-col flex-1 h-full overflow-x-auto bg-background-100">
             <div className="flex size-full p-2 space-x-2 overflow-x-auto snap-x snap-mandatory md:snap-none md:overflow-y-hidden border-b border-gray-alpha-400">
