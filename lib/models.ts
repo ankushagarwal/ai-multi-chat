@@ -2,8 +2,11 @@
 // https://platform.openai.com/docs/models
 // https://ai.google.dev/gemini-api/docs/models/gemini
 export const modelList = [
+  // groq
+  { name: 'llama-3.3-70b-versatile' },
+  { name: 'mixtral-8x7b-32768' },
   // llama
-  { name: 'meta-llama/llama-3.1-70b-instruct' },
+  // { name: 'meta-llama/llama-3.1-70b-instruct' },
   // anthropic
   { name: 'anthropic/claude-3.5-sonnet:beta' },
   { name: 'anthropic/claude-3.5-haiku:beta' },

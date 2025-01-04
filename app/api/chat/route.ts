@@ -2,6 +2,8 @@ import { openai } from '@ai-sdk/openai';
 import { google } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { openrouter } from '@openrouter/ai-sdk-provider';
+import { groq } from '@ai-sdk/groq';
+
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -40,6 +42,11 @@ export async function POST(req: NextRequest) {
     });
   } else if (modelName.startsWith('gpt') || modelName.startsWith('o')) {
     model = openai(modelName);
+  } else if (
+    modelName === 'llama-3.3-70b-versatile' ||
+    modelName === 'mixtral-8x7b-32768'
+  ) {
+    model = groq(modelName);
   } else {
     model = openrouter(modelName);
   }

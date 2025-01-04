@@ -42,7 +42,8 @@ export default function Home() {
         'deepseek/deepseek-chat',
         'gpt-4o',
         'anthropic/claude-3.5-haiku:beta',
-        'meta-llama/llama-3.1-70b-instruct',
+        'llama-3.3-70b-versatile',
+        'mixtral-8x7b-32768',
       ]);
     } else if (modelSet === 'deep') {
       setInitialModels([
