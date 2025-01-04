@@ -48,7 +48,10 @@ export async function POST(req: NextRequest) {
     modelName === 'mixtral-8x7b-32768'
   ) {
     model = groq(modelName);
-  } else if (modelName === 'mistral-nemo' || modelName === 'codestral-latest') {
+  } else if (
+    modelName === 'open-mistral-nemo' ||
+    modelName === 'codestral-latest'
+  ) {
     model = mistral(modelName);
   } else {
     model = openrouter(modelName);
