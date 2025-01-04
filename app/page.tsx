@@ -44,6 +44,8 @@ export default function Home() {
         'anthropic/claude-3.5-haiku:beta',
         'llama-3.3-70b-versatile',
         'mixtral-8x7b-32768',
+        // 'mistral-nemo',
+        'codestral-latest',
       ]);
     } else if (modelSet === 'deep') {
       setInitialModels([

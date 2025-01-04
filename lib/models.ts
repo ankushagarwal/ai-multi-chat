@@ -2,6 +2,9 @@
 // https://platform.openai.com/docs/models
 // https://ai.google.dev/gemini-api/docs/models/gemini
 export const modelList = [
+  // mistral
+  { name: 'mistral-nemo' },
+  { name: 'codestral-latest' },
   // groq
   { name: 'llama-3.3-70b-versatile' },
   { name: 'mixtral-8x7b-32768' },

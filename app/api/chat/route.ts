@@ -3,6 +3,7 @@ import { google } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { openrouter } from '@openrouter/ai-sdk-provider';
 import { groq } from '@ai-sdk/groq';
+import { mistral } from '@ai-sdk/mistral';
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
@@ -47,6 +48,8 @@ export async function POST(req: NextRequest) {
     modelName === 'mixtral-8x7b-32768'
   ) {
     model = groq(modelName);
+  } else if (modelName === 'mistral-nemo' || modelName === 'codestral-latest') {
+    model = mistral(modelName);
   } else {
     model = openrouter(modelName);
   }
