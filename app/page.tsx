@@ -18,21 +18,21 @@ export default function Home() {
   const { isSidebarVisible } = useSidebar();
   const [initialModels, setInitialModels] = useState<string[]>([]);
   const [conversationId, setConversationId] = useState<string>('');
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setIsMobile(window !== undefined && window.innerWidth <= 768);
     const urlParams = new URLSearchParams(window.location.search);
     const conversationId = urlParams.get('conversationId');
     const modelSet = urlParams.get('modelSet');
 
     if (conversationId) {
-      const conversation = getConversation(conversationId);
-      if (conversation !== null) {
-        setInitialModels(conversation.chats.map((chat) => chat.modelId));
-        setConversationId(conversationId);
-        return;
-      }
+      (async () => {
+        const conversation = await getConversation(conversationId);
+        if (conversation !== null) {
+          setInitialModels(conversation.chats.map((chat) => chat.modelId));
+          setConversationId(conversationId);
+          return;
+        }
+      })();
     }
 
     if (modelSet === 'fast') {
@@ -85,32 +85,33 @@ export default function Home() {
         }
       }
     });
-    if (conversationId === '') {
-      console.log('Creating new conversation');
-      console.log('inputValue', inputValue);
-      const actualInputValue = overrideInputValue
-        ? overrideInputValue
-        : inputValue;
-      const newConversationId = createConversation(actualInputValue);
-      console.log('newConversationId', newConversationId);
-      fetch('/api/completion', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: actualInputValue }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
+    (async () => {
+      if (conversationId === '') {
+        console.log('Creating new conversation');
+        console.log('inputValue', inputValue);
+        const actualInputValue = overrideInputValue
+          ? overrideInputValue
+          : inputValue;
+        const newConversationId = await createConversation(actualInputValue);
+        console.log('newConversationId', newConversationId);
+        try {
+          const response = await fetch('/api/completion', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: actualInputValue }),
+          });
+          const data = await response.json();
           const { title } = data;
           console.log('Generated title:', title);
-          updateConversation(newConversationId, { title });
-        })
-        .catch((error) => {
+          await updateConversation(newConversationId, { title });
+        } catch (error) {
           console.error('Error generating title:', error);
-        });
-      setConversationId(newConversationId);
-    }
+        }
+        await setConversationId(newConversationId);
+      }
+    })();
     setInputValue('');
   };
 

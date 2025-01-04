@@ -22,7 +22,7 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
       const storedState = localStorage.getItem('isSidebarVisible');
       return storedState ? JSON.parse(storedState) : false;
     }
-    return false;
+    return true;
   });
 
   const toggleSidebar = () => {

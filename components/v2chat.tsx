@@ -256,21 +256,39 @@ const V2Chat = forwardRef<
     },
     ref,
   ) => {
-    const conversation = getConversation(conversationId);
-    let conversationMessages: any[] = [];
-
-    if (conversation) {
-      if (index >= 0 && index < conversation.chats.length) {
-        conversationMessages = conversation.chats[index].messages ?? [];
-      } else {
-        // console.warn(
-        //   `Chat index ${index} is out of bounds for conversation ${conversationId}`,
-        // );
-        conversationMessages = [];
-      }
-    }
-
     const [selectedModel, setSelectedModel] = useState(modelName);
+    const [conversationMessages, setConversationMessages] = useState<any[]>([]);
+    const [isLoadingConversation, setIsLoadingConversation] = useState(true);
+
+    useEffect(() => {
+      const fetchConversation = async () => {
+        try {
+          const conversation = await getConversation(conversationId);
+          let messages: any[] = [];
+
+          if (conversation) {
+            if (index >= 0 && index < conversation.chats.length) {
+              messages = conversation.chats[index].messages ?? [];
+            } else {
+              // console.warn(
+              //   `Chat index ${index} is out of bounds for conversation ${conversationId}`,
+              // );
+              messages = [];
+            }
+          }
+
+          setConversationMessages(messages);
+        } catch (error) {
+          console.error('Failed to fetch conversation:', error);
+          setConversationMessages([]);
+        } finally {
+          setIsLoadingConversation(false);
+        }
+      };
+
+      fetchConversation();
+    }, [conversationId, index]);
+
     const { messages, handleSubmit, setInput, isLoading } = useChat({
       api: `/api/chat?modelName=${selectedModel}`,
       initialMessages: conversationMessages,
@@ -293,6 +311,10 @@ const V2Chat = forwardRef<
         handleSubmit();
       },
     }));
+
+    if (isLoadingConversation) {
+      return <div>Loading conversation...</div>;
+    }
 
     return (
       <div

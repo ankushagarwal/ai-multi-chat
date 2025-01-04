@@ -67,49 +67,47 @@ export const getModels = (): string[] => {
 // Conversation storage //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
-// Define the structure of a Message
+// database.ts
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
-// Define the structure of a Chat
 interface Chat {
   modelId: string;
   messages: Message[];
 }
 
-// Define the structure of a Conversation with a creation timestamp
 export interface Conversation {
   id: string;
   title: string;
   chats: Chat[];
-  createdAt: number; // Unix timestamp in milliseconds
+  createdAt: number;
 }
 
-// Key used to store conversations in local storage
-const CONVERSATIONS_KEY = 'conversations';
+const DB_NAME = 'ChatApp';
+const STORE_NAME = 'conversations';
+const DB_VERSION = 1;
 
-// Retrieve all conversations from local storage
-const getAllConversations = (): { [id: string]: Conversation } => {
-  if (typeof window === 'undefined') {
-    return {};
-  }
-  const data = localStorage.getItem(CONVERSATIONS_KEY);
-  return data ? JSON.parse(data) : {};
+// Initialize database
+const initDB = (): Promise<IDBDatabase> => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        store.createIndex('createdAt', 'createdAt');
+      }
+    };
+  });
 };
 
-// Save all conversations to local storage
-const saveAllConversations = (conversations: {
-  [id: string]: Conversation;
-}) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(conversations));
-};
-
-// Generate a unique ID for a new conversation
+// Generate a unique ID
 const generateUniqueId = (): string => {
   const characters = 'abcdefghijklmnopqrstuvwxyz';
   let result = '';
@@ -119,93 +117,109 @@ const generateUniqueId = (): string => {
   return result;
 };
 
-/**
- * Creates a new conversation with the given title.
- * @param title The title of the new conversation.
- * @returns The ID of the newly created conversation.
- */
-export const createConversation = (title: string): string => {
+// Create a new conversation
+export const createConversation = async (title: string): Promise<string> => {
+  const db = await initDB();
   const id = generateUniqueId();
-  const newConversation: Conversation = {
-    id,
-    title,
-    chats: [],
-    createdAt: Date.now(), // Set the creation timestamp
-  };
 
-  const conversations = getAllConversations();
-  conversations[id] = newConversation;
-  saveAllConversations(conversations);
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
 
-  return id;
+    const newConversation: Conversation = {
+      id,
+      title,
+      chats: [],
+      createdAt: Date.now(),
+    };
+
+    const request = store.add(newConversation);
+
+    request.onsuccess = () => resolve(id);
+    request.onerror = () => reject(request.error);
+  });
 };
 
-/**
- * Updates a conversation with the given ID.
- * @param id The ID of the conversation to update.
- * @param updatedFields The fields to update in the conversation.
- * @param chatIndex Optional index to update a specific chat in the chats array.
- * @returns A boolean indicating whether the update was successful.
- */
-export const updateConversation = (
+// Update a conversation
+export const updateConversation = async (
   id: string,
   updatedFields: Partial<Pick<Conversation, 'title' | 'chats'>>,
   chatIndex?: number,
-): boolean => {
-  // console.log('updateConversation', id, updatedFields, chatIndex);
+): Promise<boolean> => {
+  const db = await initDB();
 
-  const conversations = getAllConversations();
-  const conversation = conversations[id];
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
 
-  if (!conversation) {
-    console.warn(`Conversation with id ${id} not found.`);
-    return false;
-  }
+    const getRequest = store.get(id);
 
-  // Update only the provided fields
-  if (updatedFields.title !== undefined) {
-    conversation.title = updatedFields.title;
-  }
+    getRequest.onsuccess = () => {
+      const conversation = getRequest.result;
+      if (!conversation) {
+        resolve(false);
+        return;
+      }
 
-  if (updatedFields.chats !== undefined) {
-    if (chatIndex !== undefined && Array.isArray(conversation.chats)) {
-      // Update a specific chat at the given index
-      if (conversation.chats.length <= chatIndex) {
-        for (let i = conversation.chats.length; i <= chatIndex; i++) {
-          conversation.chats[i] = {
-            modelId: '',
-            messages: [],
-          };
+      if (updatedFields.title !== undefined) {
+        conversation.title = updatedFields.title;
+      }
+
+      if (updatedFields.chats !== undefined) {
+        if (chatIndex !== undefined && Array.isArray(conversation.chats)) {
+          if (conversation.chats.length <= chatIndex) {
+            for (let i = conversation.chats.length; i <= chatIndex; i++) {
+              conversation.chats[i] = { modelId: '', messages: [] };
+            }
+          }
+          conversation.chats[chatIndex] = updatedFields.chats[0];
+        } else {
+          conversation.chats = updatedFields.chats;
         }
       }
-      conversation.chats[chatIndex] = updatedFields.chats[0];
-    } else {
-      // Replace the entire chats array
-      conversation.chats = updatedFields.chats;
-    }
-  }
 
-  conversations[id] = conversation;
-  saveAllConversations(conversations);
+      const updateRequest = store.put(conversation);
+      updateRequest.onsuccess = () => resolve(true);
+      updateRequest.onerror = () => reject(updateRequest.error);
+    };
 
-  return true;
+    getRequest.onerror = () => reject(getRequest.error);
+  });
 };
 
-/**
- * Retrieves all conversations sorted by their start time (ascending).
- * @returns An array of conversations sorted by creation time.
- */
-export const getAllConversationsSorted = (): Conversation[] => {
-  const conversations = getAllConversations();
-  const conversationArray = Object.values(conversations);
+// Get all conversations sorted by creation time
+export const getAllConversationsSorted = async (): Promise<Conversation[]> => {
+  const db = await initDB();
 
-  // Sort conversations by createdAt in descending order (latest first)
-  conversationArray.sort((a, b) => b.createdAt - a.createdAt);
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const index = store.index('createdAt');
 
-  return conversationArray;
+    const request = index.getAll();
+
+    request.onsuccess = () => {
+      const conversations = request.result;
+      conversations.sort((a, b) => b.createdAt - a.createdAt);
+      resolve(conversations);
+    };
+
+    request.onerror = () => reject(request.error);
+  });
 };
 
-export const getConversation = (id: string): Conversation | null => {
-  const conversations = getAllConversations();
-  return conversations[id] || null;
+// Get a single conversation
+export const getConversation = async (
+  id: string,
+): Promise<Conversation | null> => {
+  const db = await initDB();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(id);
+
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+  });
 };

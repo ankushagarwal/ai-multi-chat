@@ -11,8 +11,12 @@ export default function LeftSidebar() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
 
   useEffect(() => {
-    const loadedConversations = getAllConversationsSorted();
-    setConversations(loadedConversations);
+    const fetchConversations = async () => {
+      const loadedConversations = await getAllConversationsSorted();
+      setConversations(loadedConversations);
+    };
+
+    fetchConversations();
   }, []);
 
   return (
